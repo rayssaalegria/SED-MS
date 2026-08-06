@@ -38,13 +38,13 @@ Com `NEXT_PUBLIC_DEMO_MODE=true` (padrão no `.env.example`), o login funciona s
 
 | Perfil | E-mail |
 |--------|--------|
-| Administrador | `admin@sige.ms.gov.br` |
-| Governador | `governador@sige.ms.gov.br` |
-| SEGOV | `segov@sige.ms.gov.br` |
-| Secretário SED | `secretario.sed@sige.ms.gov.br` |
-| Gestor de projeto | `gestor.sed@sige.ms.gov.br` |
-| Responsável por entrega | `entrega.sed@sige.ms.gov.br` |
-| Avaliador | `avaliador@sige.ms.gov.br` |
+| Administrador | `admin@sid.ms.gov.br` |
+| Governador | `governador@sid.ms.gov.br` |
+| SEGOV | `segov@sid.ms.gov.br` |
+| Secretário SED | `secretario.sed@sid.ms.gov.br` |
+| Gestor de projeto | `gestor.sed@sid.ms.gov.br` |
+| Responsável por entrega | `entrega.sed@sid.ms.gov.br` |
+| Avaliador | `avaliador@sid.ms.gov.br` |
 
 ## Configurar Supabase (produção / integração real)
 

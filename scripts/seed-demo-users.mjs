@@ -32,43 +32,43 @@ const ORG = {
 
 const users = [
   {
-    email: "admin@sige.ms.gov.br",
+    email: "admin@sid.ms.gov.br",
     full_name: "Ana Paula Ribeiro",
     role: "admin",
     orgs: [ORG.GOV, ORG.SEGOV, ORG.SED],
   },
   {
-    email: "governador@sige.ms.gov.br",
+    email: "governador@sid.ms.gov.br",
     full_name: "Carlos Eduardo Mendes",
     role: "governador",
     orgs: [ORG.GOV],
   },
   {
-    email: "segov@sige.ms.gov.br",
+    email: "segov@sid.ms.gov.br",
     full_name: "Fernanda Oliveira Costa",
     role: "segov",
     orgs: [ORG.SEGOV, ORG.GOV],
   },
   {
-    email: "secretario.sed@sige.ms.gov.br",
+    email: "secretario.sed@sid.ms.gov.br",
     full_name: "Marcos Antônio Silva",
     role: "secretario",
     orgs: [ORG.SED],
   },
   {
-    email: "gestor.sed@sige.ms.gov.br",
+    email: "gestor.sed@sid.ms.gov.br",
     full_name: "Juliana Ferreira Santos",
     role: "gestor_projeto",
     orgs: [ORG.SED],
   },
   {
-    email: "entrega.sed@sige.ms.gov.br",
+    email: "entrega.sed@sid.ms.gov.br",
     full_name: "Pedro Henrique Almeida",
     role: "responsavel_entrega",
     orgs: [ORG.SED],
   },
   {
-    email: "avaliador@sige.ms.gov.br",
+    email: "avaliador@sid.ms.gov.br",
     full_name: "Camila Rodrigues Lima",
     role: "avaliador",
     orgs: [ORG.SEGOV, ORG.SED],
