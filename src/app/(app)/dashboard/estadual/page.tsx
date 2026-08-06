@@ -3,7 +3,7 @@ import { EstadualDashboardClient } from "@/features/dashboards/components/estadu
 import { getSessionUser } from "@/lib/auth/session";
 import { hasPermission } from "@/lib/rbac/permissions";
 
-export const metadata = { title: "Dashboard estadual" };
+export const metadata = { title: "Visão consolidada da SED" };
 
 export default async function DashboardEstadualPage() {
   const user = await getSessionUser();

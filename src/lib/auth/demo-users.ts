@@ -40,27 +40,21 @@ export interface DemoAccount {
   firstAccessCompleted?: boolean;
 }
 
+/** Contas de demonstração focadas na SED/MS (SEGOV apenas para validação do Contrato de Gestão). */
 export const DEMO_ACCOUNTS: DemoAccount[] = [
   {
-    email: "admin@sid.ms.gov.br",
+    email: "admin@sed.ms.gov.br",
     fullName: "Ana Paula Ribeiro",
-    jobTitle: "Administradora do sistema",
+    jobTitle: "Administradora do sistema — SED",
     role: "admin",
-    organizations: [ORG_GOV, ORG_SEGOV, ORG_SED],
-  },
-  {
-    email: "governador@sid.ms.gov.br",
-    fullName: "Carlos Eduardo Mendes",
-    jobTitle: "Governador do Estado",
-    role: "governador",
-    organizations: [ORG_GOV],
+    organizations: [ORG_SED],
   },
   {
     email: "segov@sid.ms.gov.br",
     fullName: "Fernanda Oliveira Costa",
-    jobTitle: "Gestora da SEGOV",
+    jobTitle: "Gestora da SEGOV (validação do CG)",
     role: "segov",
-    organizations: [ORG_SEGOV, ORG_GOV],
+    organizations: [ORG_SEGOV],
   },
   {
     email: "secretario.sed@sid.ms.gov.br",
@@ -86,9 +80,9 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
   {
     email: "avaliador@sid.ms.gov.br",
     fullName: "Camila Rodrigues Lima",
-    jobTitle: "Avaliadora institucional",
+    jobTitle: "Avaliadora institucional — SED",
     role: "avaliador",
-    organizations: [ORG_SEGOV, ORG_SED],
+    organizations: [ORG_SED, ORG_SEGOV],
   },
 ];
 

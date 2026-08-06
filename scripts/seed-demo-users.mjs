@@ -32,22 +32,16 @@ const ORG = {
 
 const users = [
   {
-    email: "admin@sid.ms.gov.br",
+    email: "admin@sed.ms.gov.br",
     full_name: "Ana Paula Ribeiro",
     role: "admin",
-    orgs: [ORG.GOV, ORG.SEGOV, ORG.SED],
-  },
-  {
-    email: "governador@sid.ms.gov.br",
-    full_name: "Carlos Eduardo Mendes",
-    role: "governador",
-    orgs: [ORG.GOV],
+    orgs: [ORG.SED],
   },
   {
     email: "segov@sid.ms.gov.br",
     full_name: "Fernanda Oliveira Costa",
     role: "segov",
-    orgs: [ORG.SEGOV, ORG.GOV],
+    orgs: [ORG.SEGOV],
   },
   {
     email: "secretario.sed@sid.ms.gov.br",
@@ -71,7 +65,7 @@ const users = [
     email: "avaliador@sid.ms.gov.br",
     full_name: "Camila Rodrigues Lima",
     role: "avaliador",
-    orgs: [ORG.SEGOV, ORG.SED],
+    orgs: [ORG.SED, ORG.SEGOV],
   },
 ];
 

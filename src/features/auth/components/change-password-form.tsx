@@ -33,7 +33,7 @@ export function ChangePasswordForm() {
       <CardHeader>
         <CardTitle className="text-[var(--ms-primary)]">Alterar senha</CardTitle>
         <CardDescription>
-          Atualize sua senha de acesso ao SID-MS.
+          Atualize sua senha de acesso ao SID-SED.
         </CardDescription>
       </CardHeader>
       <CardContent>

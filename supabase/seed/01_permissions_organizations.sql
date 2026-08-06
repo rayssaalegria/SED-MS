@@ -1,4 +1,4 @@
--- SID-MS — Seed: permissões, órgãos iniciais e papéis (Etapa 1)
+-- SID-SED — Seed: permissões, SED/MS e papéis (Escopo Educação)
 -- Usuários Auth devem ser criados via script scripts/seed-demo-users.mjs
 
 INSERT INTO public.permissions (code, name, description, module) VALUES
@@ -108,34 +108,15 @@ FROM (
 JOIN public.permissions p ON p.code = r.permission_code
 ON CONFLICT (role, permission_id) DO NOTHING;
 
--- Governo + órgãos iniciais
+-- Governo + SED (escopo exclusivo) + SEGOV (validação do Contrato de Gestão)
 INSERT INTO public.organizations (id, name, acronym, type, status, area_of_activity)
 VALUES
   ('11111111-1111-1111-1111-111111111001', 'Governo do Estado de Mato Grosso do Sul', 'GOV-MS', 'governo', 'ativo', 'Administração estadual'),
-  ('11111111-1111-1111-1111-111111111002', 'Controladoria-Geral do Estado', 'CGE', 'orgao', 'ativo', 'Controle interno'),
-  ('11111111-1111-1111-1111-111111111003', 'Procuradoria-Geral do Estado', 'PGE', 'orgao', 'ativo', 'Consultoria jurídica'),
-  ('11111111-1111-1111-1111-111111111004', 'Secretaria de Estado da Casa Civil', 'CASA CIVIL', 'secretaria', 'ativo', 'Coordenação governamental'),
-  ('11111111-1111-1111-1111-111111111005', 'Secretaria de Estado de Administração', 'SAD', 'secretaria', 'ativo', 'Gestão administrativa'),
-  ('11111111-1111-1111-1111-111111111006', 'Secretaria de Estado de Assistência Social e dos Direitos Humanos', 'SEAD', 'secretaria', 'ativo', 'Assistência social'),
-  ('11111111-1111-1111-1111-111111111007', 'Secretaria de Estado da Cidadania', 'SEC', 'secretaria', 'ativo', 'Cidadania'),
   ('11111111-1111-1111-1111-111111111008', 'Secretaria de Estado de Educação', 'SED', 'secretaria', 'ativo', 'Educação'),
-  ('11111111-1111-1111-1111-111111111009', 'Secretaria de Estado de Fazenda', 'SEFAZ', 'secretaria', 'ativo', 'Finanças públicas'),
-  ('11111111-1111-1111-1111-111111111010', 'Secretaria de Estado de Governo e Gestão Estratégica', 'SEGOV', 'secretaria', 'ativo', 'Gestão estratégica'),
-  ('11111111-1111-1111-1111-111111111011', 'Secretaria de Estado de Infraestrutura e Logística', 'SEILOG', 'secretaria', 'ativo', 'Infraestrutura'),
-  ('11111111-1111-1111-1111-111111111012', 'Secretaria de Estado de Justiça e Segurança Pública', 'SEJUSP', 'secretaria', 'ativo', 'Segurança pública'),
-  ('11111111-1111-1111-1111-111111111013', 'Secretaria de Estado de Meio Ambiente, Desenvolvimento, Ciência, Tecnologia e Inovação', 'SEMADESC', 'secretaria', 'ativo', 'Meio ambiente e inovação'),
-  ('11111111-1111-1111-1111-111111111014', 'Secretaria de Estado de Saúde', 'SES', 'secretaria', 'ativo', 'Saúde'),
-  ('11111111-1111-1111-1111-111111111015', 'Secretaria de Estado de Turismo, Esporte e Cultura', 'SETESC', 'secretaria', 'ativo', 'Turismo, esporte e cultura')
+  ('11111111-1111-1111-1111-111111111010', 'Secretaria de Estado de Governo e Gestão Estratégica', 'SEGOV', 'secretaria', 'ativo', 'Gestão estratégica')
 ON CONFLICT (acronym) DO NOTHING;
 
 UPDATE public.organizations o
 SET parent_id = '11111111-1111-1111-1111-111111111001'
-WHERE o.acronym <> 'GOV-MS'
-  AND o.parent_id IS NULL
-  AND o.id IN (
-    SELECT id FROM public.organizations
-    WHERE acronym IN (
-      'CGE','PGE','CASA CIVIL','SAD','SEAD','SEC','SED','SEFAZ',
-      'SEGOV','SEILOG','SEJUSP','SEMADESC','SES','SETESC'
-    )
-  );
+WHERE o.acronym IN ('SED', 'SEGOV')
+  AND o.parent_id IS NULL;

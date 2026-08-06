@@ -1,10 +1,10 @@
-# SID-MS
+# SID-SED
 
-**Sistema Integrado de Dados de Mato Grosso do Sul**
+**Sistema Integrado de Dados — Secretaria de Estado de Educação de Mato Grosso do Sul**
 
-Plataforma estadual para gestão de Contratos de Gestão, projetos estratégicos, metas, indicadores, entregas, evidências, riscos e resultados das secretarias.
+Plataforma da SED/MS para gestão do Contrato de Gestão, projetos estratégicos, metas, indicadores, entregas, evidências, riscos e resultados da educação estadual.
 
-> Etapas 1–7 concluídas: auth, cadastros, gestão, monitoramento, governança, dashboards/mapa/relatórios e portal público.
+> Escopo exclusivo da Secretaria de Estado de Educação. A SEGOV permanece apenas como vínculo de validação do Contrato de Gestão.
 
 ## Stack
 
@@ -18,7 +18,7 @@ Plataforma estadual para gestão de Contratos de Gestão, projetos estratégicos
 ## Pré-requisitos
 
 - Node.js 20+
-- Conta Supabase (opcional na Etapa 1 — use o modo demo)
+- Conta Supabase (opcional — use o modo demo)
 
 ## Instalação
 
@@ -38,9 +38,8 @@ Com `NEXT_PUBLIC_DEMO_MODE=true` (padrão no `.env.example`), o login funciona s
 
 | Perfil | E-mail |
 |--------|--------|
-| Administrador | `admin@sid.ms.gov.br` |
-| Governador | `governador@sid.ms.gov.br` |
-| SEGOV | `segov@sid.ms.gov.br` |
+| Administrador SED | `admin@sed.ms.gov.br` |
+| SEGOV (validação CG) | `segov@sid.ms.gov.br` |
 | Secretário SED | `secretario.sed@sid.ms.gov.br` |
 | Gestor de projeto | `gestor.sed@sid.ms.gov.br` |
 | Responsável por entrega | `entrega.sed@sid.ms.gov.br` |
@@ -83,82 +82,14 @@ npm run seed:users   # usuários no Supabase Auth
 src/
   app/(auth)/          # login, recuperação, primeiro acesso, senha
   app/(app)/           # área autenticada
-  app/(public)/        # portal público
+  app/(public)/        # portal público da SED
   components/layout/   # AppShell, Sidebar, Header...
   components/shared/   # MetricCard, StatusBadge, EmptyState...
   features/auth/       # actions e formulários
   lib/auth|rbac|supabase|integrations/
 supabase/migrations/   # schema + RLS
-supabase/seed/         # dados iniciais
+supabase/seed/         # dados iniciais (SED + SEGOV)
 ```
-
-## O que a Etapa 1 entrega
-
-- Autenticação (login, recuperar senha, primeiro acesso, alterar senha)
-- Sessão protegida + middleware + redirect por perfil
-- Menu lateral recolhível filtrado por permissões
-- Seleção de órgão quando o usuário tem mais de um vínculo
-- Dashboards estadual e da secretaria (dados demonstrativos)
-- Cadastro demonstrativo de órgãos + organograma navegável
-- Usuários, perfis/permissões, notificações e logs de auditoria (demo)
-- Portal público mínimo em `/publico`
-- Migrations SQL + RLS + seed institucional
-- Abstrações para integrações governamentais futuras
-
-## O que a Etapa 2 entrega
-
-- Layout alinhado ao design Figma (sidebar escura, header, logo SED, rodapé SASI)
-- CRUD demonstrativo de órgãos (criar + listar + buscar)
-- Organograma com unidades da SED
-- Cadastro dos 79 municípios de MS (busca e filtro por região)
-- Configurações estratégicas: pilares, ODS e programas do PPA
-- Migration `00006_municipalities_strategic.sql`
-
-## O que a Etapa 3 entrega
-
-- Contrato de Gestão SED 2026 (lista, novo, detalhe com abas)
-- 3 programas, 6 projetos, 15 entregas e atividades demonstrativas
-- Regras: evidência obrigatória, justificativa de atraso/parcial, exclusão lógica
-- Cálculo automático de % do projeto (entregas) e do contrato (projetos)
-- Atividades com visualizações Lista, Kanban e Linha do tempo
-- Migration `00007_contracts_projects.sql`
-
-## O que a Etapa 4 entrega
-
-- Indicadores com status automático, tendência e detalhe com série histórica (Recharts)
-- Evidências com validação (aprovar / rejeitar / solicitar complementação)
-- Orçamento: previsto × pago, gap físico×financeiro e alertas
-- Riscos com matriz probabilidade × impacto e planos de tratamento
-- Impedimentos com atualização de status e solução
-- Migration `00008_monitoring.sql`
-
-## O que a Etapa 5 entrega
-
-- Fila de aprovações com fluxo planejamento → secretário → SEGOV/avaliador
-- Solicitações de alteração com versionamento (valor anterior/novo, motivo e parecer)
-- Aditivos contratuais com avanço de etapas e comparação de cláusulas
-- Avaliações anuais (autoavaliação, nota SEGOV e plano de melhoria)
-- Auditoria completa com filtros por ação e trilha gerada pelas decisões
-- Migration `00009_governance.sql`
-
-## O que a Etapa 6 entrega
-
-- Dashboard estadual com gráficos Recharts e painel “Atenção da gestão”
-- Dashboard da secretaria com filtro por projeto e métricas do store demo
-- Agenda estratégica (prazos, comitês, entregas e avaliações)
-- Mapa estadual dos 79 municípios (status, investimento e detalhe)
-- Central de relatórios + histórico de exportações com download CSV
-  (tudo na aba Relatórios do menu)
-- Migration `00010_analytics.sql`
-
-## O que a Etapa 7 entrega
-
-- Portal público em `/publico` (sem autenticação)
-- Listagem de programas e projetos marcados como públicos
-- Filtros: secretaria, município, ano, programa, pilar e situação
-- Detalhe público com execução, investimento, entregas concluídas, indicadores e documentos públicos
-- Sem dados pessoais, riscos sigilosos ou documentos restritos
-- Migration `00011_public_portal.sql`
 
 ## Deploy
 
@@ -166,4 +97,4 @@ Pronto para Vercel + Supabase Cloud. Configure as variáveis de ambiente no prov
 
 ## Identidade visual
 
-Azul institucional (`#0B3A66`), azul secundário, verde (sucesso), amarelo (atenção), vermelho (risco/atraso), fundo cinza-claro e cards brancos.
+Azul institucional (`#0B3A66`), azul secundário, verde (sucesso), amarelo (atenção), vermelho (risco/atraso), fundo cinza-claro e cards brancos — alinhado à identidade SED/SASI.

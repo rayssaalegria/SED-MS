@@ -48,11 +48,6 @@ export function PublicPortalClient() {
     return [...set].sort((a, b) => a.localeCompare(b, "pt-BR"));
   }, [allProjects]);
 
-  const organizations = useMemo(() => {
-    const set = new Set(allProjects.map((p) => p.organizationAcronym));
-    return [...set].sort();
-  }, [allProjects]);
-
   const years = useMemo(() => {
     const set = new Set(allProjects.map((p) => String(p.year)));
     return [...set].sort();
@@ -100,11 +95,11 @@ export function PublicPortalClient() {
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-8">
       <section className="space-y-3">
         <h1 className="text-3xl font-semibold tracking-tight text-[#1b2030]">
-          Transparência da gestão estratégica
+          Transparência da SED/MS
         </h1>
         <p className="max-w-3xl text-muted-foreground">
-          Consulte programas, projetos e resultados públicos autorizados das
-          secretarias do Estado de Mato Grosso do Sul.
+          Consulte programas, projetos e resultados públicos autorizados da
+          Secretaria de Estado de Educação de Mato Grosso do Sul.
         </p>
       </section>
 
@@ -112,11 +107,11 @@ export function PublicPortalClient() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">
-              Secretarias
+              Programas públicos
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold">{summary.organizations}</p>
+            <p className="text-2xl font-semibold">{programs.length}</p>
           </CardContent>
         </Card>
         <Card>
@@ -165,24 +160,6 @@ export function PublicPortalClient() {
               aria-label="Pesquisar"
             />
           </div>
-          <Select
-            value={filters.organizationAcronym}
-            onValueChange={(value) =>
-              update("organizationAcronym", value ?? "todas")
-            }
-          >
-            <SelectTrigger aria-label="Secretaria">
-              <SelectValue placeholder="Secretaria" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todas">Todas as secretarias</SelectItem>
-              {organizations.map((org) => (
-                <SelectItem key={org} value={org}>
-                  {org}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
           <Select
             value={filters.municipality}
             onValueChange={(value) => update("municipality", value ?? "todos")}

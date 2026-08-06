@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
+import { DetailSheet } from "@/components/shared/detail-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,12 +22,14 @@ import {
 import { useManagement } from "@/features/management/store";
 import {
   CONTRACT_STATUS_LABELS,
+  type ManagementContract,
 } from "@/types/management";
 import { contractTone, formatDate } from "@/features/management/utils";
 
 export function ContractsListClient() {
   const { contracts, softDeleteContract } = useManagement();
   const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<ManagementContract | null>(null);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -43,13 +46,13 @@ export function ContractsListClient() {
     <div>
       <PageHeader
         title="Contratos de Gestão"
-        description="Elaboração, pactuação e acompanhamento dos contratos anuais das secretarias."
+        description="Clique em uma linha para ver todos os campos do contrato."
         breadcrumbs={[
           { label: "Gestão estratégica", href: "/contratos" },
           { label: "Contratos de Gestão" },
         ]}
         actions={
-          <Button render={<Link href="/contratos/novo" />}>
+          <Button nativeButton={false} render={<Link href="/contratos/novo" />}>
             <Plus className="size-4" />
             Novo contrato
           </Button>
@@ -96,14 +99,21 @@ export function ContractsListClient() {
               </TableHeader>
               <TableBody>
                 {filtered.map((contract) => (
-                  <TableRow key={contract.id}>
-                    <TableCell>
-                      <Link
-                        href={`/contratos/${contract.id}`}
-                        className="font-medium text-[#7d141d] hover:underline"
-                      >
-                        {contract.code}
-                      </Link>
+                  <TableRow
+                    key={contract.id}
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => setSelected(contract)}
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setSelected(contract);
+                      }
+                    }}
+                    aria-label={`Detalhes do contrato ${contract.code}`}
+                  >
+                    <TableCell className="font-medium text-[#7d141d]">
+                      {contract.code}
                     </TableCell>
                     <TableCell>{contract.name}</TableCell>
                     <TableCell>{contract.organizationAcronym}</TableCell>
@@ -125,9 +135,12 @@ export function ContractsListClient() {
                         variant="ghost"
                         size="icon"
                         aria-label={`Excluir ${contract.code}`}
-                        onClick={() => {
+                        onClick={(event) => {
+                          event.stopPropagation();
                           softDeleteContract(contract.id);
-                          toast.success("Contrato arquivado (exclusão lógica).");
+                          toast.success(
+                            "Contrato arquivado (exclusão lógica).",
+                          );
                         }}
                       >
                         <Trash2 className="size-4" />
@@ -140,6 +153,84 @@ export function ContractsListClient() {
           </CardContent>
         </Card>
       )}
+
+      <DetailSheet
+        open={!!selected}
+        onOpenChange={(isOpen) => !isOpen && setSelected(null)}
+        contextLabel="Contrato de Gestão"
+        title={selected?.name ?? "Contrato"}
+        description={
+          selected
+            ? `${selected.organizationAcronym} · ${CONTRACT_STATUS_LABELS[selected.status]}`
+            : undefined
+        }
+        metaLabel="Código"
+        metaValue={selected?.code}
+        metaSubtext={
+          selected ? `Ciclo ${selected.year}` : undefined
+        }
+        fields={
+          selected
+            ? [
+                { label: "Código", value: selected.code },
+                { label: "Nome", value: selected.name },
+                { label: "Ano", value: selected.year },
+                { label: "Órgão", value: selected.organizationAcronym },
+                { label: "Objetivo", value: selected.objective },
+                { label: "Governador", value: selected.governorName },
+                { label: "Secretário", value: selected.secretaryName },
+                { label: "Gestor", value: selected.managerName },
+                {
+                  label: "Elaborado em",
+                  value: formatDate(selected.draftedAt),
+                },
+                {
+                  label: "Pactuado em",
+                  value: selected.pactuatedAt
+                    ? formatDate(selected.pactuatedAt)
+                    : "—",
+                },
+                {
+                  label: "Assinado em",
+                  value: selected.signedAt
+                    ? formatDate(selected.signedAt)
+                    : "—",
+                },
+                {
+                  label: "Vigência",
+                  value: `${formatDate(selected.startDate)} — ${formatDate(selected.endDate)}`,
+                },
+                { label: "Versão", value: selected.version },
+                {
+                  label: "Execução",
+                  value: `${selected.executionPercent}%`,
+                },
+                {
+                  label: "Nota final",
+                  value: selected.finalScore ?? "—",
+                },
+                {
+                  label: "Situação",
+                  value: (
+                    <StatusBadge
+                      label={CONTRACT_STATUS_LABELS[selected.status]}
+                      tone={contractTone(selected.status)}
+                    />
+                  ),
+                },
+                {
+                  label: "Observações",
+                  value: selected.observations ?? "—",
+                },
+                {
+                  label: "Público",
+                  value: selected.isPublic ? "Sim" : "Não",
+                },
+              ]
+            : []
+        }
+        footerHref={selected ? `/contratos/${selected.id}` : undefined}
+      />
     </div>
   );
 }

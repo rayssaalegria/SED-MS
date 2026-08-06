@@ -11,7 +11,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { PageHeader } from "@/components/layout/page-header";
 import { MetricCard } from "@/components/shared/metric-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,7 +31,8 @@ import {
   physicalFinancialGap,
 } from "@/lib/domain/monitoring";
 
-export function BudgetClient() {
+/** Visão legada de execução financeira por projeto (mantida no módulo). */
+export function FinancialExecutionTab() {
   const { budgets } = useMonitoring();
   const { projects } = useManagement();
 
@@ -73,24 +73,16 @@ export function BudgetClient() {
   }));
 
   return (
-    <div>
-      <PageHeader
-        title="Orçamento"
-        breadcrumbs={[
-          { label: "Execução", href: "/orcamento" },
-          { label: "Orçamento" },
-        ]}
-      />
-
-      <div className="mb-6 grid gap-4 md:grid-cols-3">
+    <div className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-3">
         <MetricCard title="Previsto" value={formatCurrency(totals.planned)} />
         <MetricCard title="Atualizado" value={formatCurrency(totals.updated)} />
         <MetricCard title="Pago" value={formatCurrency(totals.paid)} />
       </div>
 
-      <Card className="mb-6">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-base">Previsto versus executado</CardTitle>
+          <CardTitle className="text-base">Previsto versus pago</CardTitle>
         </CardHeader>
         <CardContent className="h-72">
           <ResponsiveContainer width="100%" height="100%">
@@ -100,7 +92,9 @@ export function BudgetClient() {
               <YAxis />
               <Tooltip
                 formatter={(value) =>
-                  formatCurrency(typeof value === "number" ? value : Number(value))
+                  formatCurrency(
+                    typeof value === "number" ? value : Number(value),
+                  )
                 }
               />
               <Legend />

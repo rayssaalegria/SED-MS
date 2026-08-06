@@ -3,7 +3,7 @@ import { SecretariaDashboardClient } from "@/features/dashboards/components/secr
 import { getSessionUser } from "@/lib/auth/session";
 import { hasPermission } from "@/lib/rbac/permissions";
 
-export const metadata = { title: "Dashboard da secretaria" };
+export const metadata = { title: "Dashboard da SED" };
 
 export default async function DashboardSecretariaPage() {
   const user = await getSessionUser();

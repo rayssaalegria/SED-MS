@@ -24,7 +24,7 @@ export function ContractFormClient() {
   const router = useRouter();
   const { upsertContract } = useManagement();
   const secretarias = DEMO_ORGANIZATIONS.filter(
-    (org) => org.type === "secretaria" || org.type === "orgao",
+    (org) => org.acronym === "SED",
   );
 
   const [form, setForm] = useState({

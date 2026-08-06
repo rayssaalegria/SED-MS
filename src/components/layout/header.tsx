@@ -44,10 +44,11 @@ function resolvePageTitle(pathname: string) {
       }
     }
   }
-  if (pathname.startsWith("/dashboard/estadual")) return "Dashboard estadual";
-  if (pathname.startsWith("/dashboard/secretaria")) return "Dashboard da secretaria";
+  if (pathname.startsWith("/dashboard/estadual")) return "Visão consolidada da SED";
+  if (pathname.startsWith("/dashboard/secretaria")) return "Dashboard da SED";
+  if (pathname === "/") return "SID-SED";
   if (pathname.startsWith("/dashboard")) return "Dashboard";
-  return "SID-MS";
+  return "SID-SED";
 }
 
 export function Header({

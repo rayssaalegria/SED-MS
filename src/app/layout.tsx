@@ -11,11 +11,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "SID-MS",
-    template: "%s | SID-MS",
+    default: "SID-SED | Educação MS",
+    template: "%s | SID-SED",
   },
   description:
-    "Sistema Integrado de Dados de Mato Grosso do Sul — Contratos de Gestão, projetos, metas e resultados.",
+    "Sistema Integrado de Dados da Secretaria de Estado de Educação de Mato Grosso do Sul — Contratos de Gestão, projetos, metas e resultados.",
 };
 
 export default function RootLayout({

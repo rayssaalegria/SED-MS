@@ -102,7 +102,7 @@ export function SecretariaDashboardClient({
         title={`Dashboard — ${organizationAcronym}`}
         breadcrumbs={[
           { label: "Início", href: "/dashboard" },
-          { label: "Dashboard da secretaria" },
+          { label: "Dashboard da SED" },
         ]}
         actions={
           <Select
@@ -143,7 +143,7 @@ export function SecretariaDashboardClient({
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          title="Execução da secretaria"
+          title="Execução da SED"
           value={`${contract?.executionPercent ?? 0}%`}
           description="Baseada no peso dos projetos"
           icon={FileText}

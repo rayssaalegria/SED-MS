@@ -6,6 +6,7 @@ import { Plus, Search } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { DetailSheet } from "@/components/shared/detail-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,6 +41,7 @@ export function ProgramsClient() {
   const { programs, contracts, upsertProgram } = useManagement();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<Program | null>(null);
   const [form, setForm] = useState({
     code: "",
     name: "",
@@ -56,6 +58,10 @@ export function ProgramsClient() {
         p.code.toLowerCase().includes(q) || p.name.toLowerCase().includes(q),
     );
   }, [programs, query]);
+
+  const selectedContract = selected
+    ? contracts.find((c) => c.id === selected.contractId)
+    : undefined;
 
   function handleCreate() {
     if (!form.code || !form.name || !form.contractId) {
@@ -88,7 +94,7 @@ export function ProgramsClient() {
     <div>
       <PageHeader
         title="Programas"
-        description="Programas vinculados aos Contratos de Gestão."
+        description="Programas vinculados aos Contratos de Gestão. Clique em uma linha para ver todos os campos."
         breadcrumbs={[
           { label: "Gestão estratégica", href: "/programas" },
           { label: "Programas" },
@@ -133,7 +139,19 @@ export function ProgramsClient() {
                   (c) => c.id === program.contractId,
                 );
                 return (
-                  <TableRow key={program.id}>
+                  <TableRow
+                    key={program.id}
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => setSelected(program)}
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setSelected(program);
+                      }
+                    }}
+                    aria-label={`Detalhes do programa ${program.code}`}
+                  >
                     <TableCell className="font-medium">{program.code}</TableCell>
                     <TableCell>{program.name}</TableCell>
                     <TableCell>
@@ -141,6 +159,7 @@ export function ProgramsClient() {
                         <Link
                           href={`/contratos/${contract.id}`}
                           className="text-[#7d141d] hover:underline"
+                          onClick={(event) => event.stopPropagation()}
                         >
                           {contract.code}
                         </Link>
@@ -159,6 +178,57 @@ export function ProgramsClient() {
           </Table>
         </CardContent>
       </Card>
+
+      <DetailSheet
+        open={!!selected}
+        onOpenChange={(isOpen) => !isOpen && setSelected(null)}
+        contextLabel="Programa"
+        title={selected?.name ?? "Programa"}
+        description={selected?.pillarCode}
+        metaLabel="Código"
+        metaValue={selected?.code}
+        fields={
+          selected
+            ? [
+                { label: "Código", value: selected.code },
+                { label: "Nome", value: selected.name },
+                { label: "Descrição", value: selected.description },
+                { label: "Objetivo", value: selected.objective },
+                {
+                  label: "Contrato",
+                  value: selectedContract?.code ?? "—",
+                },
+                { label: "Unidade gestora", value: selected.managingUnit },
+                { label: "Público-alvo", value: selected.targetAudience },
+                { label: "Abrangência", value: selected.scope },
+                { label: "Pilar", value: selected.pillarCode },
+                { label: "ODS", value: selected.ods.join(", ") },
+                { label: "Programa PPA", value: selected.ppaProgramCode },
+                {
+                  label: "Situação",
+                  value: (
+                    <StatusBadge
+                      label={
+                        selected.status === "ativo"
+                          ? "Ativo"
+                          : selected.status.replaceAll("_", " ")
+                      }
+                      tone="success"
+                    />
+                  ),
+                },
+                {
+                  label: "Público",
+                  value: selected.isPublic ? "Sim" : "Não",
+                },
+              ]
+            : []
+        }
+        footerHref={
+          selectedContract ? `/contratos/${selectedContract.id}` : undefined
+        }
+        footerLabel="Ver contrato vinculado"
+      />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>

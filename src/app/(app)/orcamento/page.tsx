@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { BudgetClient } from "@/features/budgets/components/budget-client";
+import { BudgetModuleClient } from "@/features/budgets/components/budget-module-client";
 import { getSessionUser } from "@/lib/auth/session";
 import { hasPermission } from "@/lib/rbac/permissions";
+import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 
-export const metadata = { title: "Orçamento" };
+export const metadata = { title: "Orçamento e previsão" };
 
 export default async function OrcamentoPage() {
   const user = await getSessionUser();
@@ -11,5 +13,9 @@ export default async function OrcamentoPage() {
   if (!hasPermission(user.permissions, "projects.read")) {
     redirect("/dashboard");
   }
-  return <BudgetClient />;
+  return (
+    <Suspense fallback={<LoadingSkeleton />}>
+      <BudgetModuleClient />
+    </Suspense>
+  );
 }

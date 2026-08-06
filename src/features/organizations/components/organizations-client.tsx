@@ -96,8 +96,8 @@ export function OrganizationsClient() {
   return (
     <div>
       <PageHeader
-        title="Órgãos estaduais"
-        description="Cadastro institucional dos órgãos, secretarias e entidades vinculadas."
+        title="Órgãos e vínculos da SED"
+        description="Cadastro da Secretaria de Estado de Educação e vínculos institucionais do Contrato de Gestão."
         breadcrumbs={[
           { label: "Administração", href: "/orgaos" },
           { label: "Órgãos" },
@@ -105,7 +105,7 @@ export function OrganizationsClient() {
         actions={
           <Button type="button" onClick={() => setOpen(true)}>
             <Plus className="size-4" />
-            Novo órgão
+            Novo vínculo
           </Button>
         }
       />

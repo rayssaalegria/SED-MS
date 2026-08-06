@@ -242,6 +242,7 @@ export function Sidebar({ user, collapsed }: SidebarProps) {
                 width={40}
                 height={46}
                 className="object-contain"
+                sizes="40px"
                 priority
               />
             </div>
@@ -252,6 +253,7 @@ export function Sidebar({ user, collapsed }: SidebarProps) {
                 alt="SED — Secretaria de Estado de Educação / Estado de Mato Grosso do Sul"
                 fill
                 className="object-contain object-left"
+                sizes="188px"
                 priority
               />
             </div>

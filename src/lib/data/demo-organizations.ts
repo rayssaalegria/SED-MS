@@ -1,5 +1,6 @@
 import type { Organization } from "@/types/domain";
 
+/** Escopo institucional do SID-SED: apenas a SED/MS e vínculos de governança do CG. */
 export const DEMO_ORGANIZATIONS: Organization[] = [
   {
     id: "11111111-1111-1111-1111-111111111001",
@@ -9,65 +10,9 @@ export const DEMO_ORGANIZATIONS: Organization[] = [
     status: "ativo",
   },
   {
-    id: "11111111-1111-1111-1111-111111111002",
-    name: "Controladoria-Geral do Estado",
-    acronym: "CGE",
-    type: "orgao",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
-  {
-    id: "11111111-1111-1111-1111-111111111003",
-    name: "Procuradoria-Geral do Estado",
-    acronym: "PGE",
-    type: "orgao",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
-  {
-    id: "11111111-1111-1111-1111-111111111004",
-    name: "Secretaria de Estado da Casa Civil",
-    acronym: "CASA CIVIL",
-    type: "secretaria",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
-  {
-    id: "11111111-1111-1111-1111-111111111005",
-    name: "Secretaria de Estado de Administração",
-    acronym: "SAD",
-    type: "secretaria",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
-  {
-    id: "11111111-1111-1111-1111-111111111006",
-    name: "Secretaria de Estado de Assistência Social e dos Direitos Humanos",
-    acronym: "SEAD",
-    type: "secretaria",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
-  {
-    id: "11111111-1111-1111-1111-111111111007",
-    name: "Secretaria de Estado da Cidadania",
-    acronym: "SEC",
-    type: "secretaria",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
-  {
     id: "11111111-1111-1111-1111-111111111008",
     name: "Secretaria de Estado de Educação",
     acronym: "SED",
-    type: "secretaria",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
-  {
-    id: "11111111-1111-1111-1111-111111111009",
-    name: "Secretaria de Estado de Fazenda",
-    acronym: "SEFAZ",
     type: "secretaria",
     parent_id: "11111111-1111-1111-1111-111111111001",
     status: "ativo",
@@ -80,44 +25,6 @@ export const DEMO_ORGANIZATIONS: Organization[] = [
     parent_id: "11111111-1111-1111-1111-111111111001",
     status: "ativo",
   },
-  {
-    id: "11111111-1111-1111-1111-111111111011",
-    name: "Secretaria de Estado de Infraestrutura e Logística",
-    acronym: "SEILOG",
-    type: "secretaria",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
-  {
-    id: "11111111-1111-1111-1111-111111111012",
-    name: "Secretaria de Estado de Justiça e Segurança Pública",
-    acronym: "SEJUSP",
-    type: "secretaria",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
-  {
-    id: "11111111-1111-1111-1111-111111111013",
-    name: "Secretaria de Estado de Meio Ambiente, Desenvolvimento, Ciência, Tecnologia e Inovação",
-    acronym: "SEMADESC",
-    type: "secretaria",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
-  {
-    id: "11111111-1111-1111-1111-111111111014",
-    name: "Secretaria de Estado de Saúde",
-    acronym: "SES",
-    type: "secretaria",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
-  {
-    id: "11111111-1111-1111-1111-111111111015",
-    name: "Secretaria de Estado de Turismo, Esporte e Cultura",
-    acronym: "SETESC",
-    type: "secretaria",
-    parent_id: "11111111-1111-1111-1111-111111111001",
-    status: "ativo",
-  },
 ];
+
+export const SED_ORGANIZATION_ID = "11111111-1111-1111-1111-111111111008";

@@ -33,7 +33,7 @@ export function ReportsClient({
   function exportReport(code: string) {
     if (code === "REL-EXEC-EST") {
       const csv = rowsToCsv(
-        ["Órgão", "Execução %", "Projetos", "Atrasados"],
+        ["Unidade", "Execução %", "Projetos", "Atrasados"],
         DEMO_ORG_EXECUTION.map((row) => [
           row.org,
           row.execution,

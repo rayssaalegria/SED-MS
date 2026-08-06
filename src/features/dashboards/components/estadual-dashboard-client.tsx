@@ -84,10 +84,11 @@ export function EstadualDashboardClient() {
   return (
     <div>
       <PageHeader
-        title="Dashboard estadual"
+        title="Visão consolidada da SED"
+        description="Painel executivo do Contrato de Gestão e portfólio da Secretaria de Estado de Educação."
         breadcrumbs={[
           { label: "Início", href: "/dashboard" },
-          { label: "Dashboard estadual" },
+          { label: "Visão consolidada" },
         ]}
       />
 
@@ -95,7 +96,7 @@ export function EstadualDashboardClient() {
         <MetricCard
           title="Execução geral"
           value={`${metrics.avgExecution}%`}
-          description="Média dos contratos no ciclo demo"
+          description="Média do Contrato de Gestão SED 2026"
           icon={CheckCircle2}
           trend="up"
         />
@@ -108,7 +109,7 @@ export function EstadualDashboardClient() {
         <MetricCard
           title="Projetos"
           value={metrics.projects}
-          description="Portfólio demonstrativo + demais órgãos"
+          description="Portfólio estratégico da SED"
           icon={Package}
         />
         <MetricCard
@@ -129,7 +130,7 @@ export function EstadualDashboardClient() {
         <MetricCard
           title="Aprovações abertas"
           value={metrics.openApprovals}
-          description="Fila estadual e secretarias"
+          description="Fila interna e validação SEGOV"
         />
         <MetricCard
           title="Evidências em validação"
@@ -150,7 +151,7 @@ export function EstadualDashboardClient() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base">
-              Execução por secretaria
+              Execução por unidade da SED
             </CardTitle>
           </CardHeader>
           <CardContent className="h-72">

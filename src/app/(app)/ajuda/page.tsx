@@ -8,7 +8,7 @@ export default function AjudaPage() {
     <div>
       <PageHeader
         title="Ajuda"
-        description="Orientação rápida de uso do SID-MS."
+        description="Orientação rápida de uso do SID-SED (Secretaria de Estado de Educação de MS)."
         breadcrumbs={[
           { label: "Visão geral", href: "/dashboard" },
           { label: "Ajuda" },
@@ -20,8 +20,9 @@ export default function AjudaPage() {
             <CardTitle className="text-base">Acesso e perfis</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            O menu e as telas variam conforme o perfil. Governador e SEGOV veem
-            o consolidado estadual; secretarias veem apenas o próprio escopo.
+            O menu e as telas variam conforme o perfil. Gestores da SED acompanham
+            o Contrato de Gestão, projetos e entregas; a SEGOV atua na validação
+            institucional do contrato.
           </CardContent>
         </Card>
         <Card>
@@ -29,8 +30,8 @@ export default function AjudaPage() {
             <CardTitle className="text-base">Cadastros institucionais</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            Em Administração você gerencia órgãos, estrutura, usuários,
-            municípios e alinhamentos estratégicos (pilares, ODS e PPA).
+            Em Administração você gerencia a estrutura da SED, usuários,
+            municípios da rede e alinhamentos estratégicos (pilares, ODS e PPA).
           </CardContent>
         </Card>
       </div>

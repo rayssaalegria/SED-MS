@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { DetailSheet } from "@/components/shared/detail-sheet";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -17,12 +17,16 @@ import {
 } from "@/components/ui/table";
 import { useManagement } from "@/features/management/store";
 import { deliverableTone, formatDate } from "@/features/management/utils";
-import { DELIVERABLE_STATUS_LABELS } from "@/types/management";
+import {
+  DELIVERABLE_STATUS_LABELS,
+  type Deliverable,
+} from "@/types/management";
 import { isDueSoon, isDeliverableOverdue } from "@/lib/domain/progress";
 
 export function DeliverablesListClient() {
-  const { deliverables } = useManagement();
+  const { deliverables, projects } = useManagement();
   const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<Deliverable | null>(null);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -35,11 +39,15 @@ export function DeliverablesListClient() {
     );
   }, [deliverables, query]);
 
+  const selectedProject = selected
+    ? projects.find((p) => p.id === selected.projectId)
+    : undefined;
+
   return (
     <div>
       <PageHeader
         title="Entregas"
-        description="Entregas mensuráveis com regras de evidência, atraso e percentual."
+        description="Entregas mensuráveis. Clique em uma linha para ver todos os campos."
         breadcrumbs={[
           { label: "Gestão estratégica", href: "/entregas" },
           { label: "Entregas" },
@@ -76,14 +84,21 @@ export function DeliverablesListClient() {
             </TableHeader>
             <TableBody>
               {filtered.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <Link
-                      href={`/entregas/${item.id}`}
-                      className="font-medium text-[#7d141d] hover:underline"
-                    >
-                      {item.code}
-                    </Link>
+                <TableRow
+                  key={item.id}
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => setSelected(item)}
+                  tabIndex={0}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setSelected(item);
+                    }
+                  }}
+                  aria-label={`Detalhes da entrega ${item.code}`}
+                >
+                  <TableCell className="font-medium text-[#7d141d]">
+                    {item.code}
                   </TableCell>
                   <TableCell>{item.title}</TableCell>
                   <TableCell>{item.ownerName}</TableCell>
@@ -110,6 +125,104 @@ export function DeliverablesListClient() {
           </Table>
         </CardContent>
       </Card>
+
+      <DetailSheet
+        open={!!selected}
+        onOpenChange={(isOpen) => !isOpen && setSelected(null)}
+        contextLabel="Entrega"
+        title={selected?.title ?? "Entrega"}
+        description={
+          selected ? DELIVERABLE_STATUS_LABELS[selected.status] : undefined
+        }
+        metaLabel="Código"
+        metaValue={selected?.code}
+        metaSubtext={
+          selected ? `Prazo ${formatDate(selected.dueDate)}` : undefined
+        }
+        fields={
+          selected
+            ? [
+                { label: "Código", value: selected.code },
+                { label: "Título", value: selected.title },
+                { label: "Descrição", value: selected.description },
+                {
+                  label: "Projeto",
+                  value: selectedProject
+                    ? `${selectedProject.code} — ${selectedProject.name}`
+                    : selected.projectId,
+                },
+                { label: "Unidade", value: selected.unitName },
+                { label: "Responsável", value: selected.ownerName },
+                {
+                  label: "Colaboradores",
+                  value: selected.collaborators.join(", ") || "—",
+                },
+                {
+                  label: "Início",
+                  value: formatDate(selected.startDate),
+                },
+                { label: "Prazo", value: formatDate(selected.dueDate) },
+                {
+                  label: "Conclusão",
+                  value: selected.completedAt
+                    ? formatDate(selected.completedAt)
+                    : "—",
+                },
+                { label: "Peso", value: selected.weight },
+                {
+                  label: "Meta planejada",
+                  value: `${selected.plannedTarget} ${selected.unitOfMeasure}`,
+                },
+                {
+                  label: "Resultado alcançado",
+                  value: `${selected.achievedResult} ${selected.unitOfMeasure}`,
+                },
+                {
+                  label: "Execução",
+                  value: `${selected.executionPercent}%`,
+                },
+                {
+                  label: "Município",
+                  value: selected.municipalityName ?? "—",
+                },
+                {
+                  label: "Evidência obrigatória",
+                  value: selected.evidenceRequired ? "Sim" : "Não",
+                },
+                {
+                  label: "Possui evidência",
+                  value: selected.hasEvidence ? "Sim" : "Não",
+                },
+                {
+                  label: "Situação",
+                  value: (
+                    <StatusBadge
+                      label={DELIVERABLE_STATUS_LABELS[selected.status]}
+                      tone={deliverableTone(selected.status)}
+                    />
+                  ),
+                },
+                {
+                  label: "Justificativa de atraso",
+                  value: selected.delayJustification ?? "—",
+                },
+                {
+                  label: "Justificativa parcial",
+                  value: selected.partialJustification ?? "—",
+                },
+                {
+                  label: "Observação",
+                  value: selected.observation ?? "—",
+                },
+                {
+                  label: "Atualizado em",
+                  value: formatDate(selected.updatedAt),
+                },
+              ]
+            : []
+        }
+        footerHref={selected ? `/entregas/${selected.id}` : undefined}
+      />
     </div>
   );
 }

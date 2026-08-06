@@ -172,7 +172,7 @@ export const MENU_GROUPS: MenuGroup[] = [
         permissions: ["dashboard.estadual", "dashboard.secretaria"],
       },
       {
-        title: "Mapa estadual",
+        title: "Mapa da rede",
         href: "/mapa",
         icon: Map,
         permissions: ["dashboard.estadual", "dashboard.secretaria"],
@@ -233,6 +233,9 @@ export const MENU_GROUPS: MenuGroup[] = [
   },
 ];
 
-export const APP_NAME = "SID-MS";
+export const APP_NAME = "SID-SED";
 export const APP_FULL_NAME =
-  "Sistema Integrado de Dados de Mato Grosso do Sul";
+  "Sistema Integrado de Dados — Secretaria de Estado de Educação de Mato Grosso do Sul";
+export const APP_ORG_NAME = "Secretaria de Estado de Educação";
+export const APP_ORG_ACRONYM = "SED";
+export const APP_STATE_NAME = "Mato Grosso do Sul";

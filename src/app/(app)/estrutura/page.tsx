@@ -17,7 +17,7 @@ export default async function EstruturaPage() {
     <div>
       <PageHeader
         title="Estrutura organizacional"
-        description="Organograma navegável dos órgãos estaduais. Expanda e recolha os níveis da hierarquia."
+        description="Organograma navegável das unidades da Secretaria de Estado de Educação. Expanda e recolha os níveis da hierarquia."
         breadcrumbs={[
           { label: "Administração", href: "/orgaos" },
           { label: "Estrutura organizacional" },

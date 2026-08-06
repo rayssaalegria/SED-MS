@@ -46,7 +46,7 @@ export function LoginForm() {
             />
           </div>
           <p className="text-xl font-bold leading-none text-[#232d64]">
-            Sistema SASI
+            SID-SED · Educação MS
           </p>
         </div>
 
@@ -72,10 +72,10 @@ export function LoginForm() {
           <section className="w-full max-w-[540px] shrink-0">
             <div className="mb-4 space-y-1">
               <h1 className="text-[28px] font-bold leading-tight text-[#394aa5] md:text-[32px]">
-                Bem-vindo ao Sistema SASI
+                Secretaria de Estado de Educação
               </h1>
               <p className="text-base font-medium leading-6 text-[#6c7993]">
-                Mantenha-se atualizado em mensagens e alertas.
+                Acompanhe o Contrato de Gestão, projetos e resultados da SED/MS.
               </p>
             </div>
 
