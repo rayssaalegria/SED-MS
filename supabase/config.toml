@@ -1,0 +1,15 @@
+# Supabase local (opcional)
+# Para CLI: supabase start / supabase db reset
+
+[project]
+id = "sid-ms"
+
+[api]
+enabled = true
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+enabled = true
