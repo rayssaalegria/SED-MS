@@ -1,4 +1,4 @@
--- SID-MS — Municípios e cadastros estratégicos (Etapa 2)
+-- SED - MS — Municípios e cadastros estratégicos (Etapa 2)
 
 CREATE TABLE IF NOT EXISTS public.municipalities (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

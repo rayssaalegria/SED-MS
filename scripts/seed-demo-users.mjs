@@ -11,7 +11,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const password = "SidMS@2026";
+const password = "SedMS@2026";
 
 if (!url || !serviceKey) {
   console.error(
@@ -38,31 +38,31 @@ const users = [
     orgs: [ORG.SED],
   },
   {
-    email: "segov@sid.ms.gov.br",
+    email: "segov@sed.ms.gov.br",
     full_name: "Fernanda Oliveira Costa",
     role: "segov",
     orgs: [ORG.SEGOV],
   },
   {
-    email: "secretario.sed@sid.ms.gov.br",
+    email: "secretario.sed@sed.ms.gov.br",
     full_name: "Marcos Antônio Silva",
     role: "secretario",
     orgs: [ORG.SED],
   },
   {
-    email: "gestor.sed@sid.ms.gov.br",
+    email: "gestor.sed@sed.ms.gov.br",
     full_name: "Juliana Ferreira Santos",
     role: "gestor_projeto",
     orgs: [ORG.SED],
   },
   {
-    email: "entrega.sed@sid.ms.gov.br",
+    email: "entrega.sed@sed.ms.gov.br",
     full_name: "Pedro Henrique Almeida",
     role: "responsavel_entrega",
     orgs: [ORG.SED],
   },
   {
-    email: "avaliador@sid.ms.gov.br",
+    email: "avaliador@sed.ms.gov.br",
     full_name: "Camila Rodrigues Lima",
     role: "avaliador",
     orgs: [ORG.SED, ORG.SEGOV],

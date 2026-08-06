@@ -1,4 +1,4 @@
--- SID-MS — Órgãos e unidades organizacionais
+-- SED - MS — Órgãos e unidades organizacionais
 
 CREATE TABLE IF NOT EXISTS public.organizations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

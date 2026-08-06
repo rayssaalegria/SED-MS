@@ -1,4 +1,4 @@
--- SID-SED — Seed: permissões, SED/MS e papéis (Escopo Educação)
+-- SED - MS — Seed: permissões, SED/MS e papéis (Escopo Educação)
 -- Usuários Auth devem ser criados via script scripts/seed-demo-users.mjs
 
 INSERT INTO public.permissions (code, name, description, module) VALUES

@@ -125,7 +125,7 @@ export async function logoutAction(): Promise<void> {
   if (isDemoMode()) {
     const cookieStore = await cookies();
     cookieStore.delete({ name: DEMO_COOKIE, path: "/" });
-    cookieStore.delete({ name: "sid-ms-active-org", path: "/" });
+    cookieStore.delete({ name: "sed-ms-active-org", path: "/" });
     redirect("/login");
   }
 
@@ -169,7 +169,7 @@ export async function recoverPasswordAction(
     return {
       success: true,
       message:
-        "No modo demonstração, use a senha SidMS@2026 para qualquer usuário de teste.",
+        `No modo demonstração, use a senha ${DEMO_PASSWORD} para qualquer usuário de teste.`,
     };
   }
 
@@ -223,7 +223,7 @@ export async function firstAccessAction(
     return {
       success: true,
       message:
-        "Senha atualizada no modo demonstração. Faça login com SidMS@2026.",
+        `Senha atualizada no modo demonstração. Faça login com ${DEMO_PASSWORD}.`,
     };
   }
 
@@ -295,7 +295,7 @@ export async function changePasswordAction(
     return {
       success: true,
       message:
-        "No modo demonstração a senha permanece SidMS@2026 para todos os usuários de teste.",
+        `No modo demonstração a senha permanece ${DEMO_PASSWORD} para todos os usuários de teste.`,
     };
   }
 
@@ -369,7 +369,7 @@ export async function setActiveOrganizationAction(
     }
   }
 
-  cookieStore.set("sid-ms-active-org", organizationId, {
+  cookieStore.set("sed-ms-active-org", organizationId, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

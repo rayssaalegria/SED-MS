@@ -1,4 +1,4 @@
--- SID-SED — Orçamento: previsões, processos de contratação e execução contratual
+-- SED - MS — Orçamento: previsões, processos de contratação e execução contratual
 
 CREATE TABLE IF NOT EXISTS public.budget_forecasts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

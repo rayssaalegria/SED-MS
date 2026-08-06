@@ -1,4 +1,4 @@
--- SID-MS — Enums institucionais e de domínio (Etapa 1+)
+-- SED - MS — Enums institucionais e de domínio (Etapa 1+)
 
 DO $$ BEGIN
   CREATE TYPE public.org_unit_type AS ENUM (

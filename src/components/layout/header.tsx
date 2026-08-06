@@ -27,7 +27,7 @@ import { UserAvatar } from "@/components/shared/user-avatar";
 import { OrganizationSelector } from "@/components/shared/organization-selector";
 import { NotificationsPopover } from "@/features/notifications/components/notifications-popover";
 import { logoutAction } from "@/features/auth/actions";
-import { MENU_GROUPS } from "@/lib/constants/menu";
+import { APP_NAME, MENU_GROUPS } from "@/lib/constants/menu";
 
 interface HeaderProps {
   user: SessionUser;
@@ -46,9 +46,9 @@ function resolvePageTitle(pathname: string) {
   }
   if (pathname.startsWith("/dashboard/estadual")) return "Visão consolidada da SED";
   if (pathname.startsWith("/dashboard/secretaria")) return "Dashboard da SED";
-  if (pathname === "/") return "SID-SED";
+  if (pathname === "/") return APP_NAME;
   if (pathname.startsWith("/dashboard")) return "Dashboard";
-  return "SID-SED";
+  return APP_NAME;
 }
 
 export function Header({

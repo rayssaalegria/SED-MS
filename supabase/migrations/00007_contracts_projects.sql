@@ -1,4 +1,4 @@
--- SID-MS — Contratos, programas, projetos, entregas e atividades (Etapa 3)
+-- SED - MS — Contratos, programas, projetos, entregas e atividades (Etapa 3)
 
 CREATE TABLE IF NOT EXISTS public.management_cycles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

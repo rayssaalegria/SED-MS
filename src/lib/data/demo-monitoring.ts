@@ -193,7 +193,7 @@ export const DEMO_INDICATORS: Indicator[] = [
     description: "Percentual de evidências aprovadas no mês.",
     formula: "(aprovadas / enviadas) * 100",
     unitOfMeasure: "%",
-    dataSource: "Módulo de evidências SID-SED",
+    dataSource: "Módulo de evidências SED - MS",
     periodicity: "mensal",
     baseline: 70,
     baselineYear: 2025,

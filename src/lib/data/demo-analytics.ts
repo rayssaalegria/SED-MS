@@ -212,7 +212,7 @@ export const DEMO_AGENDA_EVENTS: AgendaEvent[] = [
     type: "prazo",
     date: "2026-08-08",
     organizationAcronym: "SEGOV",
-    location: "Sistema SID-SED",
+    location: "Sistema SED - MS",
     relatedLabel: "CG-SED-2026",
     status: "agendado",
   },

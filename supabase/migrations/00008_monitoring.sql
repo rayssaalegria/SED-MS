@@ -1,4 +1,4 @@
--- SID-MS — Monitoramento: indicadores, evidências, orçamento, riscos e impedimentos (Etapa 4)
+-- SED - MS — Monitoramento: indicadores, evidências, orçamento, riscos e impedimentos (Etapa 4)
 
 CREATE TABLE IF NOT EXISTS public.indicators (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

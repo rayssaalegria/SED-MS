@@ -233,9 +233,9 @@ export const MENU_GROUPS: MenuGroup[] = [
   },
 ];
 
-export const APP_NAME = "SID-SED";
+export const APP_NAME = "SED - MS";
 export const APP_FULL_NAME =
-  "Sistema Integrado de Dados — Secretaria de Estado de Educação de Mato Grosso do Sul";
+  "Sistema de Gestão Estratégica — Secretaria de Estado de Educação de Mato Grosso do Sul";
 export const APP_ORG_NAME = "Secretaria de Estado de Educação";
 export const APP_ORG_ACRONYM = "SED";
 export const APP_STATE_NAME = "Mato Grosso do Sul";

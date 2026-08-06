@@ -8,7 +8,7 @@ export default function AjudaPage() {
     <div>
       <PageHeader
         title="Ajuda"
-        description="Orientação rápida de uso do SID-SED (Secretaria de Estado de Educação de MS)."
+        description="Orientação rápida de uso do SED - MS (Secretaria de Estado de Educação de MS)."
         breadcrumbs={[
           { label: "Visão geral", href: "/dashboard" },
           { label: "Ajuda" },

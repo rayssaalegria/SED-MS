@@ -1,8 +1,8 @@
 import type { Organization, SessionUser, UserRole } from "@/types/domain";
 import { ROLE_PERMISSIONS } from "@/lib/rbac/permissions";
 
-export const DEMO_PASSWORD = "SidMS@2026";
-export const DEMO_COOKIE = "sid-ms-demo-session";
+export const DEMO_PASSWORD = "SedMS@2026";
+export const DEMO_COOKIE = "sed-ms-demo-session";
 
 const ORG_GOV: Organization = {
   id: "11111111-1111-1111-1111-111111111001",
@@ -50,35 +50,35 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
     organizations: [ORG_SED],
   },
   {
-    email: "segov@sid.ms.gov.br",
+    email: "segov@sed.ms.gov.br",
     fullName: "Fernanda Oliveira Costa",
     jobTitle: "Gestora da SEGOV (validação do CG)",
     role: "segov",
     organizations: [ORG_SEGOV],
   },
   {
-    email: "secretario.sed@sid.ms.gov.br",
+    email: "secretario.sed@sed.ms.gov.br",
     fullName: "Marcos Antônio Silva",
     jobTitle: "Secretário de Estado de Educação",
     role: "secretario",
     organizations: [ORG_SED],
   },
   {
-    email: "gestor.sed@sid.ms.gov.br",
+    email: "gestor.sed@sed.ms.gov.br",
     fullName: "Juliana Ferreira Santos",
     jobTitle: "Gestora de projetos — SED",
     role: "gestor_projeto",
     organizations: [ORG_SED],
   },
   {
-    email: "entrega.sed@sid.ms.gov.br",
+    email: "entrega.sed@sed.ms.gov.br",
     fullName: "Pedro Henrique Almeida",
     jobTitle: "Responsável por entregas — SED",
     role: "responsavel_entrega",
     organizations: [ORG_SED],
   },
   {
-    email: "avaliador@sid.ms.gov.br",
+    email: "avaliador@sed.ms.gov.br",
     fullName: "Camila Rodrigues Lima",
     jobTitle: "Avaliadora institucional — SED",
     role: "avaliador",

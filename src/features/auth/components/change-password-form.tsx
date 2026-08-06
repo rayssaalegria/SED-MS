@@ -7,6 +7,7 @@ import {
   changePasswordAction,
   type ActionResult,
 } from "@/features/auth/actions";
+import { APP_NAME } from "@/lib/constants/menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,7 +34,7 @@ export function ChangePasswordForm() {
       <CardHeader>
         <CardTitle className="text-[var(--ms-primary)]">Alterar senha</CardTitle>
         <CardDescription>
-          Atualize sua senha de acesso ao SID-SED.
+          Atualize sua senha de acesso ao {APP_NAME}.
         </CardDescription>
       </CardHeader>
       <CardContent>

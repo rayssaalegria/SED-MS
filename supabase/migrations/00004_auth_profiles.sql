@@ -1,4 +1,4 @@
--- SID-MS — Perfis, permissões e vínculos por órgão
+-- SED - MS — Perfis, permissões e vínculos por órgão
 
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,

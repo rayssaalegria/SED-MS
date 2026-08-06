@@ -1,4 +1,4 @@
--- SID-MS — Analytics: agenda, exportações e métricas territoriais (Etapa 6)
+-- SED - MS — Analytics: agenda, exportações e métricas territoriais (Etapa 6)
 
 CREATE TABLE IF NOT EXISTS public.agenda_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

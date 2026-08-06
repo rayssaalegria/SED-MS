@@ -1,4 +1,4 @@
--- SID-MS — Helpers RBAC e Row Level Security (Etapa 1)
+-- SED - MS — Helpers RBAC e Row Level Security (Etapa 1)
 
 CREATE OR REPLACE FUNCTION public.current_profile_id()
 RETURNS UUID

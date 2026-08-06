@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Eye, EyeOff, Globe, Loader2, Sun } from "lucide-react";
 import { loginAction, type ActionResult } from "@/features/auth/actions";
 import { DEMO_ACCOUNTS, DEMO_PASSWORD, isDemoMode } from "@/lib/auth/demo-users";
+import { APP_NAME } from "@/lib/constants/menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,7 +47,7 @@ export function LoginForm() {
             />
           </div>
           <p className="text-xl font-bold leading-none text-[#232d64]">
-            SID-SED · Educação MS
+            {APP_NAME} · Educação MS
           </p>
         </div>
 

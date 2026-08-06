@@ -1,4 +1,4 @@
--- SID-MS — Governança: aprovações, alterações, aditivos, avaliações (Etapa 5)
+-- SED - MS — Governança: aprovações, alterações, aditivos, avaliações (Etapa 5)
 -- audit_logs já existe em 00004; esta migration amplia o domínio de governança.
 
 CREATE TABLE IF NOT EXISTS public.approvals (

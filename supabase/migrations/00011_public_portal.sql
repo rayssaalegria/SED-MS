@@ -1,4 +1,4 @@
--- SID-MS — Portal público: flags de publicação (Etapa 7)
+-- SED - MS — Portal público: flags de publicação (Etapa 7)
 
 ALTER TABLE public.programs
   ADD COLUMN IF NOT EXISTS is_public BOOLEAN NOT NULL DEFAULT false;

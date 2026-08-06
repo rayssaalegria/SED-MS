@@ -1,4 +1,4 @@
--- SID-MS — Extensões e utilitários base
+-- SED - MS — Extensões e utilitários base
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE OR REPLACE FUNCTION public.set_updated_at()

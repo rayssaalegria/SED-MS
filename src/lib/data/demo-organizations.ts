@@ -1,6 +1,6 @@
 import type { Organization } from "@/types/domain";
 
-/** Escopo institucional do SID-SED: apenas a SED/MS e vínculos de governança do CG. */
+/** Escopo institucional do SED - MS: apenas a SED/MS e vínculos de governança do CG. */
 export const DEMO_ORGANIZATIONS: Organization[] = [
   {
     id: "11111111-1111-1111-1111-111111111001",

@@ -2,7 +2,7 @@
 # Para CLI: supabase start / supabase db reset
 
 [project]
-id = "sid-ms"
+id = "sed-ms"
 
 [api]
 enabled = true

@@ -1,6 +1,6 @@
-# SID-SED
+# SED - MS
 
-**Sistema Integrado de Dados — Secretaria de Estado de Educação de Mato Grosso do Sul**
+**Sistema de Gestão Estratégica — Secretaria de Estado de Educação de Mato Grosso do Sul**
 
 Plataforma da SED/MS para gestão do Contrato de Gestão, projetos estratégicos, metas, indicadores, entregas, evidências, riscos e resultados da educação estadual.
 
@@ -34,16 +34,16 @@ Acesse [http://localhost:3000](http://localhost:3000).
 
 Com `NEXT_PUBLIC_DEMO_MODE=true` (padrão no `.env.example`), o login funciona sem Supabase.
 
-**Senha de todos os usuários de teste:** `SidMS@2026`
+**Senha de todos os usuários de teste:** `SedMS@2026`
 
 | Perfil | E-mail |
 |--------|--------|
 | Administrador SED | `admin@sed.ms.gov.br` |
-| SEGOV (validação CG) | `segov@sid.ms.gov.br` |
-| Secretário SED | `secretario.sed@sid.ms.gov.br` |
-| Gestor de projeto | `gestor.sed@sid.ms.gov.br` |
-| Responsável por entrega | `entrega.sed@sid.ms.gov.br` |
-| Avaliador | `avaliador@sid.ms.gov.br` |
+| SEGOV (validação CG) | `segov@sed.ms.gov.br` |
+| Secretário SED | `secretario.sed@sed.ms.gov.br` |
+| Gestor de projeto | `gestor.sed@sed.ms.gov.br` |
+| Responsável por entrega | `entrega.sed@sed.ms.gov.br` |
+| Avaliador | `avaliador@sed.ms.gov.br` |
 
 ## Configurar Supabase (produção / integração real)
 

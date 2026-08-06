@@ -42,7 +42,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
       .is("deleted_at", null);
 
     const cookieStore = await cookies();
-    const activeOrgCookie = cookieStore.get("sid-ms-active-org")?.value;
+    const activeOrgCookie = cookieStore.get("sed-ms-active-org")?.value;
 
     const roleList = roles ?? [];
     const primary =
