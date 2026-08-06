@@ -1,11 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
-import { StatusBadge } from "@/components/shared/status-badge";
+import { DataTableCard } from "@/components/shared/data-table-card";
 import { EmptyState } from "@/components/shared/empty-state";
-import { Input } from "@/components/ui/input";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+  filterFieldClass,
+} from "@/components/shared/filter-toolbar";
+import { StatusBadge } from "@/components/shared/status-badge";
 import {
   Select,
   SelectContent,
@@ -13,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -26,6 +30,7 @@ import {
   MUNICIPALITIES,
   type MunicipalityRegion,
 } from "@/lib/data/municipalities";
+import { cn } from "@/lib/utils";
 
 const regions: Array<MunicipalityRegion | "Todas"> = [
   "Todas",
@@ -63,40 +68,42 @@ export function MunicipalitiesClient() {
         ]}
       />
 
-      <Card className="mb-4 border-border/80 shadow-sm">
-        <CardContent className="flex flex-col gap-3 pt-6 md:flex-row md:items-center">
-          <div className="relative flex-1">
-            <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-            <Input
-              className="pl-9"
-              placeholder="Buscar por município ou código IBGE..."
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              aria-label="Buscar município"
-            />
-          </div>
-          <Select
-            value={region}
-            onValueChange={(value) =>
-              setRegion((value as MunicipalityRegion | "Todas") ?? "Todas")
-            }
+      <FilterToolbar
+        trailing={
+          <ResultCount
+            filtered={filtered.length}
+            total={MUNICIPALITIES.length}
+            label="município"
+          />
+        }
+      >
+        <SearchField
+          placeholder="Buscar por município ou código IBGE..."
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          aria-label="Buscar município"
+        />
+        <Select
+          value={region}
+          onValueChange={(value) =>
+            setRegion((value as MunicipalityRegion | "Todas") ?? "Todas")
+          }
+        >
+          <SelectTrigger
+            className={cn(filterFieldClass, "w-[180px]")}
+            aria-label="Filtrar por região"
           >
-            <SelectTrigger className="w-full md:w-[200px]" aria-label="Filtrar por região">
-              <SelectValue placeholder="Região" />
-            </SelectTrigger>
-            <SelectContent>
-              {regions.map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item === "Todas" ? "Todas as regiões" : item}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <p className="text-sm text-muted-foreground whitespace-nowrap">
-            {filtered.length} municípios encontrados
-          </p>
-        </CardContent>
-      </Card>
+            <SelectValue placeholder="Região" />
+          </SelectTrigger>
+          <SelectContent>
+            {regions.map((item) => (
+              <SelectItem key={item} value={item}>
+                {item === "Todas" ? "Todas as regiões" : item}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </FilterToolbar>
 
       {filtered.length === 0 ? (
         <EmptyState
@@ -104,36 +111,34 @@ export function MunicipalitiesClient() {
           description="Ajuste a busca ou o filtro de região para visualizar resultados."
         />
       ) : (
-        <Card className="border-border/80 shadow-sm">
-          <CardContent className="pt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Município</TableHead>
-                  <TableHead>IBGE</TableHead>
-                  <TableHead>Região</TableHead>
-                  <TableHead>População estimada</TableHead>
-                  <TableHead>Situação</TableHead>
+        <DataTableCard>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Município</TableHead>
+                <TableHead>IBGE</TableHead>
+                <TableHead>Região</TableHead>
+                <TableHead>População estimada</TableHead>
+                <TableHead>Situação</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="font-medium">{item.name}</TableCell>
+                  <TableCell>{item.ibgeCode}</TableCell>
+                  <TableCell>{item.region}</TableCell>
+                  <TableCell>
+                    {item.estimatedPopulation.toLocaleString("pt-BR")}
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge label="Ativo" tone="success" />
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.ibgeCode}</TableCell>
-                    <TableCell>{item.region}</TableCell>
-                    <TableCell>
-                      {item.estimatedPopulation.toLocaleString("pt-BR")}
-                    </TableCell>
-                    <TableCell>
-                      <StatusBadge label="Ativo" tone="success" />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+              ))}
+            </TableBody>
+          </Table>
+        </DataTableCard>
       )}
     </div>
   );

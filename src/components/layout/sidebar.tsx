@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
   ChevronDown,
@@ -22,10 +22,43 @@ interface SidebarProps {
   collapsed: boolean;
 }
 
-function groupHasActiveItem(group: MenuGroup, pathname: string) {
-  return group.items.some(
-    (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
+function resolveHref(href: string) {
+  const url = new URL(href, "http://local.invalid");
+  return {
+    pathname: url.pathname,
+    aba: url.searchParams.get("aba"),
+  };
+}
+
+function itemIsActive(
+  item: MenuItem,
+  pathname: string,
+  searchParams: URLSearchParams,
+) {
+  const target = resolveHref(item.href);
+  const currentAba = searchParams.get("aba");
+
+  if (target.pathname === "/orcamento") {
+    if (pathname.startsWith("/orcamento/")) {
+      return !target.aba;
+    }
+    if (pathname !== "/orcamento") return false;
+    if (target.aba) return currentAba === target.aba;
+    return !currentAba;
+  }
+
+  return (
+    pathname === target.pathname ||
+    pathname.startsWith(`${target.pathname}/`)
   );
+}
+
+function groupHasActiveItem(
+  group: MenuGroup,
+  pathname: string,
+  searchParams: URLSearchParams,
+) {
+  return group.items.some((item) => itemIsActive(item, pathname, searchParams));
 }
 
 function SidebarChildLink({
@@ -64,11 +97,13 @@ function SidebarChildLink({
 function AccordionGroup({
   group,
   pathname,
+  searchParams,
   compact,
   defaultOpen,
 }: {
   group: MenuGroup;
   pathname: string;
+  searchParams: URLSearchParams;
   compact: boolean;
   defaultOpen: boolean;
 }) {
@@ -77,7 +112,7 @@ function AccordionGroup({
   const Icon = (singleItem?.icon ??
     group.items[0]?.icon ??
     ChevronDown) as LucideIcon;
-  const groupActive = groupHasActiveItem(group, pathname);
+  const groupActive = groupHasActiveItem(group, pathname, searchParams);
 
   useEffect(() => {
     if (compact) {
@@ -90,9 +125,7 @@ function AccordionGroup({
   // Modo recolhido: só o canal pai (ícone).
   if (compact) {
     if (singleItem) {
-      const active =
-        pathname === singleItem.href ||
-        pathname.startsWith(`${singleItem.href}/`);
+      const active = itemIsActive(singleItem, pathname, searchParams);
       return (
         <Link
           href={singleItem.href}
@@ -129,9 +162,7 @@ function AccordionGroup({
 
   // Grupo com um único destino: o próprio canal é o link (sem filho).
   if (singleItem) {
-    const active =
-      pathname === singleItem.href ||
-      pathname.startsWith(`${singleItem.href}/`);
+    const active = itemIsActive(singleItem, pathname, searchParams);
     return (
       <Link
         href={singleItem.href}
@@ -169,8 +200,7 @@ function AccordionGroup({
       {open && (
         <ul>
           {group.items.map((item) => {
-            const active =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const active = itemIsActive(item, pathname, searchParams);
             return (
               <li key={item.href}>
                 <SidebarChildLink item={item} active={active} />
@@ -185,6 +215,7 @@ function AccordionGroup({
 
 export function Sidebar({ user, collapsed }: SidebarProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [peek, setPeek] = useState(false);
 
   useEffect(() => {
@@ -267,8 +298,13 @@ export function Sidebar({ user, collapsed }: SidebarProps) {
                 key={group.title}
                 group={group}
                 pathname={pathname}
+                searchParams={searchParams}
                 compact={compact}
-                defaultOpen={groupHasActiveItem(group, pathname)}
+                defaultOpen={groupHasActiveItem(
+                  group,
+                  pathname,
+                  searchParams,
+                )}
               />
             ))}
           </nav>

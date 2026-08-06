@@ -2,11 +2,15 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
 import type { FeatureCollection } from "geojson";
 import { PageHeader } from "@/components/layout/page-header";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+  filterFieldClass,
+} from "@/components/shared/filter-toolbar";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
@@ -24,6 +28,7 @@ import {
   type MunicipalityMetric,
 } from "@/types/analytics";
 import type { MunicipalityRegion } from "@/lib/data/municipalities";
+import { cn } from "@/lib/utils";
 
 const MsInteractiveMap = dynamic(
   () =>
@@ -116,6 +121,62 @@ export function MapClient() {
         ]}
       />
 
+      <FilterToolbar
+        trailing={
+          <ResultCount
+            filtered={filtered.length}
+            total={DEMO_MUNICIPALITY_METRICS.length}
+            label="município"
+          />
+        }
+      >
+        <SearchField
+          placeholder="Buscar município..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar município"
+        />
+        <Select
+          value={region}
+          onValueChange={(value) => setRegion(value ?? "Todas")}
+        >
+          <SelectTrigger
+            className={cn(filterFieldClass, "w-[180px]")}
+            aria-label="Filtrar por região"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {(
+              ["Todas", "Centro", "Norte", "Sul", "Leste", "Pantanal"] as const
+            ).map((item) => (
+              <SelectItem key={item} value={item}>
+                {item === "Todas" ? "Todas as regiões" : item}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={status}
+          onValueChange={(value) => setStatus(value ?? "todos")}
+        >
+          <SelectTrigger
+            className={cn(filterFieldClass, "w-[180px]")}
+            aria-label="Filtrar por status"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos os status</SelectItem>
+            {(Object.keys(MAP_STATUS_LABELS) as MapStatus[]).map((item) => (
+              <SelectItem key={item} value={item}>
+                {MAP_STATUS_LABELS[item]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </FilterToolbar>
+
       <div className="mb-4 grid gap-3 md:grid-cols-5">
         {(Object.keys(MAP_STATUS_LABELS) as MapStatus[]).map((key) => (
           <Card key={key}>
@@ -133,53 +194,6 @@ export function MapClient() {
           </Card>
         ))}
       </div>
-
-      <Card className="mb-4">
-        <CardContent className="flex flex-col gap-3 pt-6 md:flex-row">
-          <div className="relative max-w-md flex-1">
-            <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-            <Input
-              className="pl-9"
-              placeholder="Buscar município..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
-          <Select
-            value={region}
-            onValueChange={(value) => setRegion(value ?? "Todas")}
-          >
-            <SelectTrigger className="w-44">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {(
-                ["Todas", "Centro", "Norte", "Sul", "Leste", "Pantanal"] as const
-              ).map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item === "Todas" ? "Todas as regiões" : item}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={status}
-            onValueChange={(value) => setStatus(value ?? "todos")}
-          >
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos os status</SelectItem>
-              {(Object.keys(MAP_STATUS_LABELS) as MapStatus[]).map((item) => (
-                <SelectItem key={item} value={item}>
-                  {MAP_STATUS_LABELS[item]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
 
       <div className="grid gap-4 xl:grid-cols-[1.4fr_1fr]">
         <Card>

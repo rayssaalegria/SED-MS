@@ -12,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import { MetricCard } from "@/components/shared/metric-card";
+import { DataTableCard } from "@/components/shared/data-table-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -105,56 +106,54 @@ export function FinancialExecutionTab() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardContent className="pt-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Projeto</TableHead>
-                <TableHead>Físico</TableHead>
-                <TableHead>Financeiro</TableHead>
-                <TableHead>Diferença</TableHead>
-                <TableHead>Pago</TableHead>
-                <TableHead>Saldo</TableHead>
-                <TableHead>Alertas</TableHead>
+      <DataTableCard>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Projeto</TableHead>
+              <TableHead>Físico</TableHead>
+              <TableHead>Financeiro</TableHead>
+              <TableHead>Diferença</TableHead>
+              <TableHead>Pago</TableHead>
+              <TableHead>Saldo</TableHead>
+              <TableHead>Alertas</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow key={row.budget.id}>
+                <TableCell className="font-medium">
+                  {row.project?.code ?? "—"}
+                  <div className="text-xs text-muted-foreground">
+                    {row.project?.name}
+                  </div>
+                </TableCell>
+                <TableCell>{row.physical}%</TableCell>
+                <TableCell>{row.financial}%</TableCell>
+                <TableCell>
+                  <StatusBadge
+                    label={`${row.gap > 0 ? "+" : ""}${row.gap} pp`}
+                    tone={
+                      row.gap >= 20
+                        ? "danger"
+                        : row.gap >= 10
+                          ? "warning"
+                          : "info"
+                    }
+                  />
+                </TableCell>
+                <TableCell>{formatCurrency(row.budget.paid)}</TableCell>
+                <TableCell>{formatCurrency(row.balance)}</TableCell>
+                <TableCell className="max-w-xs text-xs text-muted-foreground">
+                  {row.alerts.length === 0
+                    ? "Sem alertas"
+                    : row.alerts.join(" ")}
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.budget.id}>
-                  <TableCell className="font-medium">
-                    {row.project?.code ?? "—"}
-                    <div className="text-xs text-muted-foreground">
-                      {row.project?.name}
-                    </div>
-                  </TableCell>
-                  <TableCell>{row.physical}%</TableCell>
-                  <TableCell>{row.financial}%</TableCell>
-                  <TableCell>
-                    <StatusBadge
-                      label={`${row.gap > 0 ? "+" : ""}${row.gap} pp`}
-                      tone={
-                        row.gap >= 20
-                          ? "danger"
-                          : row.gap >= 10
-                            ? "warning"
-                            : "info"
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>{formatCurrency(row.budget.paid)}</TableCell>
-                  <TableCell>{formatCurrency(row.balance)}</TableCell>
-                  <TableCell className="max-w-xs text-xs text-muted-foreground">
-                    {row.alerts.length === 0
-                      ? "Sem alertas"
-                      : row.alerts.join(" ")}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            ))}
+          </TableBody>
+        </Table>
+      </DataTableCard>
     </div>
   );
 }

@@ -15,6 +15,7 @@
   --ms-bg: #f4f5ff;
   --ms-card: #ffffff;
   --ms-border: rgba(195, 201, 232, 0.6);
+  --ms-focus: #394aa5;
 
   --background: var(--ms-bg);
   --foreground: #1b2030;
@@ -107,6 +108,18 @@
   :focus-visible {
     outline: 2px solid var(--ms-secondary);
     outline-offset: 2px;
+  }
+  /* Campos de formulário: só borda 1px azul, sem outline/sombra */
+  :is(
+      input,
+      textarea,
+      select,
+      [data-slot="input"],
+      [data-slot="select-trigger"]
+    ):focus-visible {
+    outline: none;
+    outline-offset: 0;
+    box-shadow: none;
   }
 }
 

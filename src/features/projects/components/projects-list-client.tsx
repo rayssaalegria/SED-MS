@@ -1,12 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { DetailSheet } from "@/components/shared/detail-sheet";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -53,22 +57,30 @@ export function ProjectsListClient() {
         ]}
       />
 
-      <Card className="mb-4">
-        <CardContent className="pt-6">
-          <div className="relative max-w-md">
-            <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-            <Input
-              className="pl-9"
-              placeholder="Buscar por código, nome ou gestor..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <FilterToolbar
+        trailing={
+          <ResultCount
+            filtered={filtered.length}
+            total={projects.length}
+            label="projeto"
+          />
+        }
+      >
+        <SearchField
+          placeholder="Buscar por código, nome ou gestor..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar projeto"
+        />
+      </FilterToolbar>
 
-      <Card>
-        <CardContent className="pt-6">
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhum projeto encontrado"
+          description="Ajuste a busca para visualizar resultados."
+        />
+      ) : (
+        <DataTableCard>
           <Table>
             <TableHeader>
               <TableRow>
@@ -95,7 +107,7 @@ export function ProjectsListClient() {
                   }}
                   aria-label={`Detalhes do projeto ${project.code}`}
                 >
-                  <TableCell className="font-medium text-[#7d141d]">
+                  <TableCell className="font-medium text-[var(--ms-accent)]">
                     {project.code}
                   </TableCell>
                   <TableCell>{project.name}</TableCell>
@@ -112,8 +124,8 @@ export function ProjectsListClient() {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </DataTableCard>
+      )}
 
       <DetailSheet
         open={!!selected}

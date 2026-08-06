@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   CircleUserRound,
   Globe,
@@ -36,10 +36,21 @@ interface HeaderProps {
   onOpenMobileNav?: () => void;
 }
 
-function resolvePageTitle(pathname: string) {
+function resolvePageTitle(pathname: string, searchParams: URLSearchParams) {
+  const aba = searchParams.get("aba");
+  const currentHref =
+    pathname === "/orcamento" && aba
+      ? `${pathname}?aba=${aba}`
+      : pathname;
+
   for (const group of MENU_GROUPS) {
     for (const item of group.items) {
-      if (pathname === item.href || pathname.startsWith(`${item.href}/`)) {
+      if (item.href === currentHref) return item.title;
+      const itemPath = item.href.split("?")[0];
+      if (
+        !item.href.includes("?") &&
+        (pathname === itemPath || pathname.startsWith(`${itemPath}/`))
+      ) {
         return item.title;
       }
     }
@@ -58,7 +69,8 @@ export function Header({
   onOpenMobileNav,
 }: HeaderProps) {
   const pathname = usePathname();
-  const title = resolvePageTitle(pathname);
+  const searchParams = useSearchParams();
+  const title = resolvePageTitle(pathname, searchParams);
   const org =
     user.roles.find((r) => r.organization_id === user.activeOrganizationId)
       ?.organization?.acronym ?? "Sistema";

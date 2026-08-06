@@ -2,15 +2,21 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/page-header";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { DetailSheet } from "@/components/shared/detail-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -107,22 +113,30 @@ export function ProgramsClient() {
         }
       />
 
-      <Card className="mb-4">
-        <CardContent className="pt-6">
-          <div className="relative max-w-md">
-            <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-            <Input
-              className="pl-9"
-              placeholder="Buscar programa..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <FilterToolbar
+        trailing={
+          <ResultCount
+            filtered={filtered.length}
+            total={programs.length}
+            label="programa"
+          />
+        }
+      >
+        <SearchField
+          placeholder="Buscar programa..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar programa"
+        />
+      </FilterToolbar>
 
-      <Card>
-        <CardContent className="pt-6">
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhum programa encontrado"
+          description="Ajuste a busca ou cadastre um novo programa."
+        />
+      ) : (
+        <DataTableCard>
           <Table>
             <TableHeader>
               <TableRow>
@@ -176,8 +190,8 @@ export function ProgramsClient() {
               })}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </DataTableCard>
+      )}
 
       <DetailSheet
         open={!!selected}

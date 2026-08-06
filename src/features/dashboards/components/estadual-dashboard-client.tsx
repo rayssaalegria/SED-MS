@@ -25,6 +25,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { MetricCard } from "@/components/shared/metric-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ServiceCatalogSummary } from "@/features/dashboards/components/service-catalog-summary";
 import {
   DEMO_ATTENTION_ITEMS,
   DEMO_MONTHLY_SERIES,
@@ -35,8 +36,9 @@ import { useManagement } from "@/features/management/store";
 import { useMonitoring } from "@/features/monitoring/store";
 import { isOpenApproval } from "@/lib/domain/governance";
 import { riskCriticality } from "@/lib/domain/monitoring";
+import type { SessionUser } from "@/types/domain";
 
-export function EstadualDashboardClient() {
+export function EstadualDashboardClient({ user }: { user: SessionUser }) {
   const { contracts, projects, deliverables } = useManagement();
   const { evidences, risks, indicators } = useMonitoring();
   const { approvals } = useGovernance();
@@ -91,6 +93,19 @@ export function EstadualDashboardClient() {
           { label: "Visão consolidada" },
         ]}
       />
+
+      <div className="mb-8">
+        <ServiceCatalogSummary user={user} />
+      </div>
+
+      <div className="mb-2">
+        <h2 className="text-lg font-semibold tracking-tight text-[#1b2030]">
+          Indicadores executivos
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Leitura rápida do Contrato de Gestão e da operação da SED.
+        </p>
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <MetricCard

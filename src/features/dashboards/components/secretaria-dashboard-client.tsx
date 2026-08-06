@@ -125,13 +125,13 @@ export function SecretariaDashboardClient({
       />
 
       {contract && (
-        <Card className="mb-4">
-          <CardHeader className="pb-2">
+        <Card className="mb-4 gap-0 py-3">
+          <CardHeader className="px-4 pb-1 pt-0">
             <CardTitle className="text-base">
               Contrato de Gestão {contract.year}
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-wrap items-center gap-3 text-sm">
+          <CardContent className="flex flex-wrap items-center gap-3 px-4 text-sm">
             <StatusBadge label="Em execução" tone="info" />
             <span className="text-muted-foreground">
               Código {contract.code} · Execução atual{" "}

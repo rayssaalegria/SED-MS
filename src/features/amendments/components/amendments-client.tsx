@@ -3,6 +3,13 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/page-header";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
 import { MetricCard } from "@/components/shared/metric-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
@@ -42,7 +49,20 @@ function amendmentTone(status: ContractAmendment["status"]) {
 
 export function AmendmentsClient() {
   const { amendments, upsertAmendment } = useGovernance();
+  const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<ContractAmendment | null>(null);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return amendments;
+    return amendments.filter(
+      (item) =>
+        item.code.toLowerCase().includes(q) ||
+        item.title.toLowerCase().includes(q) ||
+        item.contractLabel.toLowerCase().includes(q) ||
+        AMENDMENT_TYPE_LABELS[item.type].toLowerCase().includes(q),
+    );
+  }, [amendments, query]);
 
   const totals = useMemo(() => {
     const vigente = amendments.filter((a) => a.status === "vigente").length;
@@ -105,8 +125,30 @@ export function AmendmentsClient() {
         />
       </div>
 
-      <Card>
-        <CardContent className="pt-6">
+      <FilterToolbar
+        trailing={
+          <ResultCount
+            filtered={filtered.length}
+            total={amendments.length}
+            label="aditivo"
+          />
+        }
+      >
+        <SearchField
+          placeholder="Buscar aditivo..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar aditivo"
+        />
+      </FilterToolbar>
+
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhum aditivo encontrado"
+          description="Ajuste a busca para visualizar resultados."
+        />
+      ) : (
+        <DataTableCard>
           <Table>
             <TableHeader>
               <TableRow>
@@ -120,7 +162,7 @@ export function AmendmentsClient() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {amendments.map((item) => (
+              {filtered.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="font-medium">{item.code}</TableCell>
                   <TableCell>{item.contractLabel}</TableCell>
@@ -161,8 +203,8 @@ export function AmendmentsClient() {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </DataTableCard>
+      )}
 
       <Dialog open={!!selected} onOpenChange={(open) => !open && setSelected(null)}>
         <DialogContent className="max-w-lg">

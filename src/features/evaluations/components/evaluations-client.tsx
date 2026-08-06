@@ -3,6 +3,13 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/page-header";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
 import { MetricCard } from "@/components/shared/metric-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
@@ -37,6 +44,7 @@ import {
 
 export function EvaluationsClient() {
   const { evaluations, upsertEvaluation } = useGovernance();
+  const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<AnnualEvaluation | null>(null);
   const [segovScore, setSegovScore] = useState("");
   const [plan, setPlan] = useState("");
@@ -45,6 +53,18 @@ export function EvaluationsClient() {
     () => evaluations.find((item) => item.year === 2026 && item.code === "AVL-SED-2026"),
     [evaluations],
   );
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return evaluations;
+    return evaluations.filter(
+      (item) =>
+        item.code.toLowerCase().includes(q) ||
+        item.contractLabel.toLowerCase().includes(q) ||
+        item.organizationAcronym.toLowerCase().includes(q) ||
+        String(item.year).includes(q),
+    );
+  }, [evaluations, query]);
 
   function openEval(item: AnnualEvaluation) {
     setSelected(item);
@@ -111,8 +131,30 @@ export function EvaluationsClient() {
         </div>
       )}
 
-      <Card>
-        <CardContent className="pt-6">
+      <FilterToolbar
+        trailing={
+          <ResultCount
+            filtered={filtered.length}
+            total={evaluations.length}
+            label="avaliação"
+          />
+        }
+      >
+        <SearchField
+          placeholder="Buscar avaliação..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar avaliação"
+        />
+      </FilterToolbar>
+
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhuma avaliação encontrada"
+          description="Ajuste a busca para visualizar resultados."
+        />
+      ) : (
+        <DataTableCard>
           <Table>
             <TableHeader>
               <TableRow>
@@ -126,7 +168,7 @@ export function EvaluationsClient() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {evaluations.map((item) => {
+              {filtered.map((item) => {
                 const score = item.segovScore ?? item.selfScore;
                 return (
                   <TableRow key={item.id}>
@@ -166,8 +208,8 @@ export function EvaluationsClient() {
               })}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </DataTableCard>
+      )}
 
       <Dialog open={!!selected} onOpenChange={(open) => !open && setSelected(null)}>
         <DialogContent className="max-w-lg">

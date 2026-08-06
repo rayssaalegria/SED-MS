@@ -2,13 +2,18 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Eye, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { DetailSheet } from "@/components/shared/detail-sheet";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -55,30 +60,42 @@ export function BudgetsTab({ items }: { items?: BudgetForecast[] }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative max-w-md flex-1">
-          <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-          <Input
-            className="pl-9"
-            placeholder="Buscar orçamento ou projeto..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-        <Button
-          type="button"
-          onClick={() => {
-            setEditing(null);
-            setFormOpen(true);
-          }}
-        >
-          <Plus className="size-4" />
-          Adicionar novo orçamento
-        </Button>
-      </div>
+      <FilterToolbar
+        trailing={
+          <>
+            <ResultCount
+              filtered={filtered.length}
+              total={source.length}
+              label="orçamento"
+            />
+            <Button
+              type="button"
+              onClick={() => {
+                setEditing(null);
+                setFormOpen(true);
+              }}
+            >
+              <Plus className="size-4" />
+              Novo orçamento
+            </Button>
+          </>
+        }
+      >
+        <SearchField
+          placeholder="Buscar orçamento ou projeto..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar orçamento"
+        />
+      </FilterToolbar>
 
-      <Card>
-        <CardContent className="pt-6">
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhum orçamento encontrado"
+          description="Ajuste a busca ou cadastre um novo orçamento."
+        />
+      ) : (
+        <DataTableCard>
           <Table>
             <TableHeader>
               <TableRow>
@@ -173,8 +190,8 @@ export function BudgetsTab({ items }: { items?: BudgetForecast[] }) {
               Nenhum orçamento encontrado.
             </p>
           ) : null}
-        </CardContent>
-      </Card>
+        </DataTableCard>
+      )}
 
       <BudgetFormDialog
         open={formOpen}

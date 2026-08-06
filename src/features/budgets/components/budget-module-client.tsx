@@ -4,7 +4,10 @@ import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { MetricCard } from "@/components/shared/metric-card";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  FilterToolbar,
+  filterFieldClass,
+} from "@/components/shared/filter-toolbar";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -14,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import { BudgetsTab } from "@/features/budgets/components/budgets-tab";
 import { ProcurementTab } from "@/features/budgets/components/procurement-tab";
 import { ContractExecutionTab } from "@/features/budgets/components/contract-execution-tab";
@@ -53,31 +57,31 @@ export function BudgetModuleClient() {
   const tab = parseTab(searchParams.get("aba"));
   const { budgets, processes, executions } = useBudgetModule();
 
-  const [projectFilter, setProjectFilter] = useState("todos");
-  const [typeFilter, setTypeFilter] = useState("todos");
-  const [statusFilter, setStatusFilter] = useState("todos");
-  const [sourceFilter, setSourceFilter] = useState("todos");
-  const [processFilter, setProcessFilter] = useState("todos");
+  const [projectFilter, setProjectFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [sourceFilter, setSourceFilter] = useState("");
+  const [processFilter, setProcessFilter] = useState("");
   const [periodFrom, setPeriodFrom] = useState("");
   const [periodTo, setPeriodTo] = useState("");
 
   const filteredBudgets = useMemo(() => {
     return budgets.filter((budget) => {
-      if (projectFilter !== "todos" && budget.projectId !== projectFilter) {
+      if (projectFilter && budget.projectId !== projectFilter) {
         return false;
       }
-      if (typeFilter !== "todos" && budget.projectType !== typeFilter) {
+      if (typeFilter && budget.projectType !== typeFilter) {
         return false;
       }
-      if (statusFilter !== "todos" && budget.status !== statusFilter) {
+      if (statusFilter && budget.status !== statusFilter) {
         return false;
       }
-      if (sourceFilter !== "todos" && budget.source !== sourceFilter) {
+      if (sourceFilter && budget.source !== sourceFilter) {
         return false;
       }
       if (periodFrom && budget.forecastDate < periodFrom) return false;
       if (periodTo && budget.forecastDate > periodTo) return false;
-      if (processFilter !== "todos") {
+      if (processFilter) {
         const hasProcess = processes.some(
           (p) => p.budgetId === budget.id && p.id === processFilter,
         );
@@ -143,7 +147,140 @@ export function BudgetModuleClient() {
         ]}
       />
 
-      <div className="mb-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <FilterToolbar className="flex-nowrap overflow-x-auto pb-1">
+        <Select
+          value={projectFilter || null}
+          onValueChange={(value) =>
+            setProjectFilter(value === "todos" ? "" : (value ?? ""))
+          }
+        >
+          <SelectTrigger
+            className={cn(filterFieldClass, "w-[200px]")}
+            aria-label="Projeto"
+          >
+            <SelectValue placeholder="Projeto" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos os projetos</SelectItem>
+            {projectOptions.map(([id, name]) => (
+              <SelectItem key={id} value={id}>
+                {name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={typeFilter || null}
+          onValueChange={(value) =>
+            setTypeFilter(value === "todos" ? "" : (value ?? ""))
+          }
+        >
+          <SelectTrigger
+            className={cn(filterFieldClass, "w-[160px]")}
+            aria-label="Tipo"
+          >
+            <SelectValue placeholder="Tipo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos os tipos</SelectItem>
+            {Object.entries(PROJECT_BUDGET_TYPE_LABELS).map(
+              ([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ),
+            )}
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={statusFilter || null}
+          onValueChange={(value) =>
+            setStatusFilter(value === "todos" ? "" : (value ?? ""))
+          }
+        >
+          <SelectTrigger
+            className={cn(filterFieldClass, "w-[160px]")}
+            aria-label="Status"
+          >
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos os status</SelectItem>
+            {Object.entries(BUDGET_STATUS_LABELS).map(([value, label]) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={sourceFilter || null}
+          onValueChange={(value) =>
+            setSourceFilter(value === "todos" ? "" : (value ?? ""))
+          }
+        >
+          <SelectTrigger
+            className={cn(filterFieldClass, "w-[160px]")}
+            aria-label="Cadastro"
+          >
+            <SelectValue placeholder="Cadastro" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todas as formas</SelectItem>
+            {Object.entries(BUDGET_SOURCE_LABELS).map(([value, label]) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={processFilter || null}
+          onValueChange={(value) =>
+            setProcessFilter(value === "todos" ? "" : (value ?? ""))
+          }
+        >
+          <SelectTrigger
+            className={cn(filterFieldClass, "w-[180px]")}
+            aria-label="Processo"
+          >
+            <SelectValue placeholder="Processo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos os processos</SelectItem>
+            {processes.map((process) => (
+              <SelectItem key={process.id} value={process.id}>
+                {process.processNumber}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Input
+          type="date"
+          aria-label="De"
+          title="De"
+          placeholder="De"
+          value={periodFrom}
+          onChange={(e) => setPeriodFrom(e.target.value)}
+          className={cn(filterFieldClass, "w-[150px]")}
+        />
+        <Input
+          type="date"
+          aria-label="Até"
+          title="Até"
+          placeholder="Até"
+          value={periodTo}
+          onChange={(e) => setPeriodTo(e.target.value)}
+          className={cn(filterFieldClass, "w-[150px]")}
+        />
+      </FilterToolbar>
+
+      <div className="mb-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           title="Total previsto"
           value={formatCurrency(indicators.totalPlanned)}
@@ -161,7 +298,7 @@ export function BudgetModuleClient() {
           value={formatCurrency(indicators.availableBalance)}
         />
       </div>
-      <div className="mb-6 grid gap-4 md:grid-cols-3">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <MetricCard
           title="Orçamentos"
           value={indicators.budgetsCount}
@@ -173,126 +310,27 @@ export function BudgetModuleClient() {
         <MetricCard
           title="Contratos em execução"
           value={indicators.contractsInExecution}
+          className="sm:col-span-2 lg:col-span-1"
         />
       </div>
-
-      <Card className="mb-6">
-        <CardContent className="grid gap-3 pt-6 md:grid-cols-2 xl:grid-cols-3">
-          <Select
-            value={projectFilter}
-            onValueChange={(value) => setProjectFilter(value ?? "todos")}
-          >
-            <SelectTrigger aria-label="Filtrar projeto">
-              <SelectValue placeholder="Projeto" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos os projetos</SelectItem>
-              {projectOptions.map(([id, name]) => (
-                <SelectItem key={id} value={id}>
-                  {name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={typeFilter}
-            onValueChange={(value) => setTypeFilter(value ?? "todos")}
-          >
-            <SelectTrigger aria-label="Filtrar tipo">
-              <SelectValue placeholder="Tipo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos os tipos</SelectItem>
-              {Object.entries(PROJECT_BUDGET_TYPE_LABELS).map(
-                ([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ),
-              )}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={statusFilter}
-            onValueChange={(value) => setStatusFilter(value ?? "todos")}
-          >
-            <SelectTrigger aria-label="Filtrar status">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos os status</SelectItem>
-              {Object.entries(BUDGET_STATUS_LABELS).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={sourceFilter}
-            onValueChange={(value) => setSourceFilter(value ?? "todos")}
-          >
-            <SelectTrigger aria-label="Filtrar forma de cadastro">
-              <SelectValue placeholder="Cadastro" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todas as formas</SelectItem>
-              {Object.entries(BUDGET_SOURCE_LABELS).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={processFilter}
-            onValueChange={(value) => setProcessFilter(value ?? "todos")}
-          >
-            <SelectTrigger aria-label="Filtrar processo">
-              <SelectValue placeholder="Processo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos os processos</SelectItem>
-              {processes.map((process) => (
-                <SelectItem key={process.id} value={process.id}>
-                  {process.processNumber}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <div className="grid grid-cols-2 gap-2">
-            <Input
-              type="date"
-              aria-label="Período inicial"
-              value={periodFrom}
-              onChange={(e) => setPeriodFrom(e.target.value)}
-            />
-            <Input
-              type="date"
-              aria-label="Período final"
-              value={periodTo}
-              onChange={(e) => setPeriodTo(e.target.value)}
-            />
-          </div>
-        </CardContent>
-      </Card>
 
       <Tabs
         value={tab}
         onValueChange={(value) => setTab(parseTab(value))}
       >
         <TabsList className="mb-4 flex h-auto w-full flex-wrap justify-start gap-1">
-          <TabsTrigger value="orcamentos">
-            Orçamentos / Previsão
+          <TabsTrigger value="orcamentos" className="flex-none">
+            Orçamento
           </TabsTrigger>
-          <TabsTrigger value="processos">Processos de Contratação</TabsTrigger>
-          <TabsTrigger value="execucao">Execução Contratual</TabsTrigger>
-          <TabsTrigger value="financeiro">Execução financeira</TabsTrigger>
+          <TabsTrigger value="processos" className="flex-none">
+            Processos de Contratação
+          </TabsTrigger>
+          <TabsTrigger value="execucao" className="flex-none">
+            Contrato executado
+          </TabsTrigger>
+          <TabsTrigger value="financeiro" className="flex-none">
+            Recursos utilizados
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="orcamentos">

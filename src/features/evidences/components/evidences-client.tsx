@@ -6,17 +6,21 @@ import {
   FileText,
   ImageIcon,
   Link2,
-  Search,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/page-header";
-import { StatusBadge } from "@/components/shared/status-badge";
+import { DataTableCard } from "@/components/shared/data-table-card";
 import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
+import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -77,25 +81,30 @@ export function EvidencesClient() {
         ]}
       />
 
-      <Card className="mb-4">
-        <CardContent className="flex flex-col gap-3 pt-6 md:flex-row md:items-center md:justify-between">
-          <div className="relative max-w-md flex-1">
-            <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-            <Input
-              className="pl-9"
-              placeholder="Buscar evidência..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
+      <FilterToolbar
+        trailing={
+          <>
+            <ResultCount
+              filtered={filtered.length}
+              total={evidences.length}
+              label="evidência"
             />
-          </div>
-          <Tabs value={view} onValueChange={setView}>
-            <TabsList>
-              <TabsTrigger value="cards">Cards</TabsTrigger>
-              <TabsTrigger value="table">Tabela</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </CardContent>
-      </Card>
+            <Tabs value={view} onValueChange={setView}>
+              <TabsList>
+                <TabsTrigger value="cards">Cards</TabsTrigger>
+                <TabsTrigger value="table">Tabela</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </>
+        }
+      >
+        <SearchField
+          placeholder="Buscar evidência..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar evidência"
+        />
+      </FilterToolbar>
 
       {filtered.length === 0 ? (
         <EmptyState
@@ -186,39 +195,37 @@ export function EvidencesClient() {
           ))}
         </div>
       ) : (
-        <Card>
-          <CardContent className="pt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Arquivo</TableHead>
-                  <TableHead>Responsável</TableHead>
-                  <TableHead>Situação</TableHead>
+        <DataTableCard>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Tipo</TableHead>
+                <TableHead>Arquivo</TableHead>
+                <TableHead>Responsável</TableHead>
+                <TableHead>Situação</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="font-medium">{item.name}</TableCell>
+                  <TableCell>{EVIDENCE_TYPE_LABELS[item.type]}</TableCell>
+                  <TableCell>
+                    {item.fileName ?? item.externalLink ?? "—"}
+                  </TableCell>
+                  <TableCell>{item.ownerName}</TableCell>
+                  <TableCell>
+                    <StatusBadge
+                      label={EVIDENCE_STATUS_LABELS[item.status]}
+                      tone={evidenceTone(item.status)}
+                    />
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{EVIDENCE_TYPE_LABELS[item.type]}</TableCell>
-                    <TableCell>
-                      {item.fileName ?? item.externalLink ?? "—"}
-                    </TableCell>
-                    <TableCell>{item.ownerName}</TableCell>
-                    <TableCell>
-                      <StatusBadge
-                        label={EVIDENCE_STATUS_LABELS[item.status]}
-                        tone={evidenceTone(item.status)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+              ))}
+            </TableBody>
+          </Table>
+        </DataTableCard>
       )}
     </div>
   );

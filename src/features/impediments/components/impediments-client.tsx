@@ -3,11 +3,18 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/page-header";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+  filterFieldClass,
+} from "@/components/shared/filter-toolbar";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -37,10 +44,13 @@ import {
   type Impediment,
   type ImpedimentStatus,
 } from "@/types/monitoring";
+import { cn } from "@/lib/utils";
 
 export function ImpedimentsClient() {
   const { impediments, upsertImpediment } = useMonitoring();
   const { projects, deliverables } = useManagement();
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("todos");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Impediment | null>(null);
   const [solution, setSolution] = useState("");
@@ -55,6 +65,22 @@ export function ImpedimentsClient() {
       })),
     [deliverables, impediments, projects],
   );
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return rows.filter(({ item, project, deliverable }) => {
+      const matchesStatus =
+        statusFilter === "todos" || item.status === statusFilter;
+      const matchesQuery =
+        !q ||
+        item.title.toLowerCase().includes(q) ||
+        item.description.toLowerCase().includes(q) ||
+        item.involvedOrg.toLowerCase().includes(q) ||
+        (project?.code.toLowerCase().includes(q) ?? false) ||
+        (deliverable?.code.toLowerCase().includes(q) ?? false);
+      return matchesStatus && matchesQuery;
+    });
+  }, [query, rows, statusFilter]);
 
   function openResolve(item: Impediment) {
     setEditing(item);
@@ -91,8 +117,51 @@ export function ImpedimentsClient() {
         ]}
       />
 
-      <Card>
-        <CardContent className="pt-6">
+      <FilterToolbar
+        trailing={
+          <ResultCount
+            filtered={filtered.length}
+            total={impediments.length}
+            label="impedimento"
+          />
+        }
+      >
+        <SearchField
+          placeholder="Buscar impedimento..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar impedimento"
+        />
+        <Select
+          value={statusFilter}
+          onValueChange={(value) => setStatusFilter(value ?? "todos")}
+        >
+          <SelectTrigger
+            className={cn(filterFieldClass, "w-[180px]")}
+            aria-label="Filtrar por situação"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todas as situações</SelectItem>
+            {(Object.keys(IMPEDIMENT_STATUS_LABELS) as ImpedimentStatus[]).map(
+              (item) => (
+                <SelectItem key={item} value={item}>
+                  {IMPEDIMENT_STATUS_LABELS[item]}
+                </SelectItem>
+              ),
+            )}
+          </SelectContent>
+        </Select>
+      </FilterToolbar>
+
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhum impedimento encontrado"
+          description="Ajuste a busca ou o filtro de situação para visualizar resultados."
+        />
+      ) : (
+        <DataTableCard>
           <Table>
             <TableHeader>
               <TableRow>
@@ -106,7 +175,7 @@ export function ImpedimentsClient() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rows.map(({ item, project, deliverable }) => (
+              {filtered.map(({ item, project, deliverable }) => (
                 <TableRow key={item.id}>
                   <TableCell>
                     <p className="font-medium">{item.title}</p>
@@ -145,8 +214,8 @@ export function ImpedimentsClient() {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </DataTableCard>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>

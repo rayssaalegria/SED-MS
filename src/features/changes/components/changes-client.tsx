@@ -1,14 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/page-header";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -74,22 +78,30 @@ export function ChangesClient() {
         ]}
       />
 
-      <Card className="mb-4">
-        <CardContent className="pt-6">
-          <div className="relative max-w-md">
-            <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-            <Input
-              className="pl-9"
-              placeholder="Buscar alteração..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <FilterToolbar
+        trailing={
+          <ResultCount
+            filtered={filtered.length}
+            total={changeRequests.length}
+            label="alteração"
+          />
+        }
+      >
+        <SearchField
+          placeholder="Buscar alteração..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar alteração"
+        />
+      </FilterToolbar>
 
-      <Card>
-        <CardContent className="pt-6">
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhuma alteração encontrada"
+          description="Ajuste a busca para visualizar resultados."
+        />
+      ) : (
+        <DataTableCard>
           <Table>
             <TableHeader>
               <TableRow>
@@ -144,8 +156,8 @@ export function ChangesClient() {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </DataTableCard>
+      )}
 
       <Dialog open={!!selected} onOpenChange={(open) => !open && setSelected(null)}>
         <DialogContent className="max-w-lg">

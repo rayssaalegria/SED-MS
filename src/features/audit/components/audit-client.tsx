@@ -1,11 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+  filterFieldClass,
+} from "@/components/shared/filter-toolbar";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -27,6 +32,7 @@ import {
   AUDIT_ACTION_LABELS,
   type AuditAction,
 } from "@/types/governance";
+import { cn } from "@/lib/utils";
 
 export function AuditClient() {
   const { auditLogs } = useGovernance();
@@ -57,44 +63,51 @@ export function AuditClient() {
         ]}
       />
 
-      <Card className="mb-4">
-        <CardContent className="flex flex-col gap-3 pt-6 md:flex-row md:items-center">
-          <div className="relative max-w-md flex-1">
-            <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-            <Input
-              className="pl-9"
-              placeholder="Buscar por usuário, entidade ou resumo..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
-          <Select
-            value={action}
-            onValueChange={(value) => setAction(value ?? "todas")}
+      <FilterToolbar
+        trailing={
+          <ResultCount
+            filtered={filtered.length}
+            total={auditLogs.length}
+            label="registro"
+          />
+        }
+      >
+        <SearchField
+          placeholder="Buscar por usuário, entidade ou resumo..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar log de auditoria"
+        />
+        <Select
+          value={action}
+          onValueChange={(value) => setAction(value ?? "todas")}
+        >
+          <SelectTrigger
+            className={cn(filterFieldClass, "w-[180px]")}
+            aria-label="Filtrar por ação"
           >
-            <SelectTrigger className="w-56">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todas">Todas as ações</SelectItem>
-              {(Object.keys(AUDIT_ACTION_LABELS) as AuditAction[]).map(
-                (item) => (
-                  <SelectItem key={item} value={item}>
-                    {AUDIT_ACTION_LABELS[item]}
-                  </SelectItem>
-                ),
-              )}
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todas">Todas as ações</SelectItem>
+            {(Object.keys(AUDIT_ACTION_LABELS) as AuditAction[]).map(
+              (item) => (
+                <SelectItem key={item} value={item}>
+                  {AUDIT_ACTION_LABELS[item]}
+                </SelectItem>
+              ),
+            )}
+          </SelectContent>
+        </Select>
+      </FilterToolbar>
 
-      <Card>
-        <CardContent className="pt-6">
-          <p className="mb-4 text-sm text-muted-foreground">
-            Trilha imutável no modo demonstração (apenas inclusão). Logs não
-            podem ser excluídos por usuários comuns.
-          </p>
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhum registro encontrado"
+          description="Ajuste a busca ou o filtro de ação para visualizar resultados."
+        />
+      ) : (
+        <DataTableCard header="Trilha imutável no modo demonstração (apenas inclusão). Logs não podem ser excluídos por usuários comuns.">
           <Table>
             <TableHeader>
               <TableRow>
@@ -145,8 +158,8 @@ export function AuditClient() {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </DataTableCard>
+      )}
     </div>
   );
 }

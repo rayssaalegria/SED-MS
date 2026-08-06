@@ -1,13 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Clock3, Search } from "lucide-react";
+import { Clock3 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/page-header";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
 import { MetricCard } from "@/components/shared/metric-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -119,99 +124,102 @@ export function ApprovalsClient() {
         <MetricCard title="Atrasadas" value={overdue} />
       </div>
 
-      <Card className="mb-4">
-        <CardContent className="flex flex-col gap-3 pt-6 md:flex-row md:items-center md:justify-between">
-          <div className="relative max-w-md flex-1">
-            <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-            <Input
-              className="pl-9"
-              placeholder="Buscar aprovação..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
+      <FilterToolbar
+        trailing={
+          <>
+            <ResultCount
+              filtered={filtered.length}
+              total={approvals.length}
+              label="aprovação"
             />
-          </div>
-          <Tabs value={tab} onValueChange={setTab}>
-            <TabsList>
-              <TabsTrigger value="abertas">Abertas</TabsTrigger>
-              <TabsTrigger value="concluidas">Concluídas</TabsTrigger>
-              <TabsTrigger value="todas">Todas</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </CardContent>
-      </Card>
+            <Tabs value={tab} onValueChange={setTab}>
+              <TabsList>
+                <TabsTrigger value="abertas">Abertas</TabsTrigger>
+                <TabsTrigger value="concluidas">Concluídas</TabsTrigger>
+                <TabsTrigger value="todas">Todas</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </>
+        }
+      >
+        <SearchField
+          placeholder="Buscar aprovação..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar aprovação"
+        />
+      </FilterToolbar>
 
       <div className="grid gap-4 xl:grid-cols-[1.4fr_1fr]">
-        <Card>
-          <CardContent className="pt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Solicitação</TableHead>
-                  <TableHead>Etapa</TableHead>
-                  <TableHead>Prazo</TableHead>
-                  <TableHead>Situação</TableHead>
-                  <TableHead>Ação</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.map((item) => {
-                  const days = daysUntil(item.dueDate);
-                  return (
-                    <TableRow key={item.id}>
-                      <TableCell>
-                        <p className="font-medium">{item.title}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {APPROVAL_ENTITY_LABELS[item.entityType]} ·{" "}
-                          {item.entityLabel} · {item.organizationAcronym}
-                        </p>
-                      </TableCell>
-                      <TableCell>
-                        {APPROVAL_STEP_LABELS[item.currentStep]}
-                      </TableCell>
-                      <TableCell>
-                        <span className="inline-flex items-center gap-1 text-sm">
-                          <Clock3 className="size-3.5" aria-hidden />
-                          {item.dueDate}
-                          {isOpenApproval(item.status) && (
-                            <span className="text-xs text-muted-foreground">
-                              ({days < 0 ? `${Math.abs(days)}d atraso` : `${days}d`})
-                            </span>
-                          )}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <StatusBadge
-                          label={APPROVAL_STATUS_LABELS[item.status]}
-                          tone={approvalTone(item.status)}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {isOpenApproval(item.status) ? (
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={() => openDecide(item)}
-                          >
-                            Decidir
-                          </Button>
-                        ) : (
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setSelected(item)}
-                          >
-                            Histórico
-                          </Button>
+        <DataTableCard>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Solicitação</TableHead>
+                <TableHead>Etapa</TableHead>
+                <TableHead>Prazo</TableHead>
+                <TableHead>Situação</TableHead>
+                <TableHead>Ação</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((item) => {
+                const days = daysUntil(item.dueDate);
+                return (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <p className="font-medium">{item.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {APPROVAL_ENTITY_LABELS[item.entityType]} ·{" "}
+                        {item.entityLabel} · {item.organizationAcronym}
+                      </p>
+                    </TableCell>
+                    <TableCell>
+                      {APPROVAL_STEP_LABELS[item.currentStep]}
+                    </TableCell>
+                    <TableCell>
+                      <span className="inline-flex items-center gap-1 text-sm">
+                        <Clock3 className="size-3.5" aria-hidden />
+                        {item.dueDate}
+                        {isOpenApproval(item.status) && (
+                          <span className="text-xs text-muted-foreground">
+                            ({days < 0 ? `${Math.abs(days)}d atraso` : `${days}d`})
+                          </span>
                         )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge
+                        label={APPROVAL_STATUS_LABELS[item.status]}
+                        tone={approvalTone(item.status)}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {isOpenApproval(item.status) ? (
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => openDecide(item)}
+                        >
+                          Decidir
+                        </Button>
+                      ) : (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setSelected(item)}
+                        >
+                          Histórico
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </DataTableCard>
 
         <Card>
           <CardHeader>

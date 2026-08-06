@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { Suspense, useState, type ReactNode } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import {
@@ -16,6 +16,20 @@ interface AppShellProps {
   children: ReactNode;
 }
 
+function SidebarSlot({
+  user,
+  collapsed,
+}: {
+  user: SessionUser;
+  collapsed: boolean;
+}) {
+  return (
+    <Suspense fallback={<div className="h-full w-[220px] bg-[#1b2030]" />}>
+      <Sidebar user={user} collapsed={collapsed} />
+    </Suspense>
+  );
+}
+
 export function AppShell({ user, children }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -23,7 +37,7 @@ export function AppShell({ user, children }: AppShellProps) {
   return (
     <div className="flex h-screen overflow-hidden bg-[#1b2030]">
       <div className="hidden md:block">
-        <Sidebar user={user} collapsed={collapsed} />
+        <SidebarSlot user={user} collapsed={collapsed} />
       </div>
 
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -32,7 +46,7 @@ export function AppShell({ user, children }: AppShellProps) {
             <SheetTitle>Menu de navegação</SheetTitle>
           </SheetHeader>
           <div className="h-full">
-            <Sidebar user={user} collapsed={false} />
+            <SidebarSlot user={user} collapsed={false} />
           </div>
         </SheetContent>
       </Sheet>

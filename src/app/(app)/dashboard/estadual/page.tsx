@@ -11,5 +11,5 @@ export default async function DashboardEstadualPage() {
   if (!hasPermission(user.permissions, "dashboard.estadual")) {
     redirect("/dashboard/secretaria");
   }
-  return <EstadualDashboardClient />;
+  return <EstadualDashboardClient user={user} />;
 }

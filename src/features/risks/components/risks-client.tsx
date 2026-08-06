@@ -2,6 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/layout/page-header";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -29,10 +36,30 @@ import { cn } from "@/lib/utils";
 export function RisksClient() {
   const { risks } = useMonitoring();
   const { projects } = useManagement();
+  const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string | null>(risks[0]?.id ?? null);
 
   const sorted = useMemo(() => sortRisksByCriticality(risks), [risks]);
-  const selectedRisk = sorted.find((item) => item.id === selected) ?? sorted[0];
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return sorted;
+    return sorted.filter((risk) => {
+      const project = projects.find((p) => p.id === risk.projectId);
+      return (
+        risk.title.toLowerCase().includes(q) ||
+        risk.ownerName.toLowerCase().includes(q) ||
+        RISK_CATEGORY_LABELS[risk.category].toLowerCase().includes(q) ||
+        (project?.code.toLowerCase().includes(q) ?? false)
+      );
+    });
+  }, [projects, query, sorted]);
+
+  const selectedRisk =
+    filtered.find((item) => item.id === selected) ??
+    sorted.find((item) => item.id === selected) ??
+    filtered[0] ??
+    sorted[0];
 
   return (
     <div>
@@ -153,8 +180,30 @@ export function RisksClient() {
         </Card>
       </div>
 
-      <Card>
-        <CardContent className="pt-6">
+      <FilterToolbar
+        trailing={
+          <ResultCount
+            filtered={filtered.length}
+            total={risks.length}
+            label="risco"
+          />
+        }
+      >
+        <SearchField
+          placeholder="Buscar risco..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar risco"
+        />
+      </FilterToolbar>
+
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhum risco encontrado"
+          description="Ajuste a busca para visualizar resultados."
+        />
+      ) : (
+        <DataTableCard>
           <Table>
             <TableHeader>
               <TableRow>
@@ -167,7 +216,7 @@ export function RisksClient() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sorted.map((risk) => {
+              {filtered.map((risk) => {
                 const project = projects.find((p) => p.id === risk.projectId);
                 const score = riskCriticality(risk.probability, risk.impact);
                 return (
@@ -194,8 +243,8 @@ export function RisksClient() {
               })}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </DataTableCard>
+      )}
     </div>
   );
 }

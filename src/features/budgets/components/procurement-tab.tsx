@@ -1,14 +1,20 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { DetailSheet } from "@/components/shared/detail-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -149,24 +155,36 @@ export function ProcurementTab({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative max-w-md flex-1">
-          <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-          <Input
-            className="pl-9"
-            placeholder="Buscar processo..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-        <Button type="button" onClick={openCreate} disabled={budgetOptions.length === 0}>
-          <Plus className="size-4" />
-          Novo processo
-        </Button>
-      </div>
+      <FilterToolbar
+        trailing={
+          <>
+            <ResultCount
+              filtered={filtered.length}
+              total={processes.length}
+              label="processo"
+            />
+            <Button type="button" onClick={openCreate} disabled={budgetOptions.length === 0}>
+              <Plus className="size-4" />
+              Novo processo
+            </Button>
+          </>
+        }
+      >
+        <SearchField
+          placeholder="Buscar processo..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar processo"
+        />
+      </FilterToolbar>
 
-      <Card>
-        <CardContent className="pt-6">
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhum processo encontrado"
+          description="Ajuste a busca ou cadastre um novo processo."
+        />
+      ) : (
+      <DataTableCard>
           <Table>
             <TableHeader>
               <TableRow>
@@ -245,13 +263,8 @@ export function ProcurementTab({
               })}
             </TableBody>
           </Table>
-          {filtered.length === 0 ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              Nenhum processo cadastrado. Cadastre um orçamento antes.
-            </p>
-          ) : null}
-        </CardContent>
-      </Card>
+        </DataTableCard>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-lg">

@@ -1,14 +1,20 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AlertTriangle, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { AlertTriangle, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { DataTableCard } from "@/components/shared/data-table-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { DetailSheet } from "@/components/shared/detail-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -176,28 +182,40 @@ export function ContractExecutionTab({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative max-w-md flex-1">
-          <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-          <Input
-            className="pl-9"
-            placeholder="Buscar contrato ou fornecedor..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-        <Button
-          type="button"
-          onClick={openCreate}
-          disabled={allBudgets.length === 0 || allProcesses.length === 0}
-        >
-          <Plus className="size-4" />
-          Nova execução contratual
-        </Button>
-      </div>
+      <FilterToolbar
+        trailing={
+          <>
+            <ResultCount
+              filtered={filtered.length}
+              total={executions.length}
+              label="contrato"
+            />
+            <Button
+              type="button"
+              onClick={openCreate}
+              disabled={allBudgets.length === 0 || allProcesses.length === 0}
+            >
+              <Plus className="size-4" />
+              Nova execução
+            </Button>
+          </>
+        }
+      >
+        <SearchField
+          placeholder="Buscar contrato ou fornecedor..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Buscar execução contratual"
+        />
+      </FilterToolbar>
 
-      <Card>
-        <CardContent className="pt-6 overflow-x-auto">
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="Nenhuma execução encontrada"
+          description="Ajuste a busca ou cadastre orçamento e processo antes."
+        />
+      ) : (
+        <DataTableCard>
           <Table>
             <TableHeader>
               <TableRow>
@@ -296,13 +314,8 @@ export function ContractExecutionTab({
               })}
             </TableBody>
           </Table>
-          {filtered.length === 0 ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              Nenhuma execução contratual. Cadastre orçamento e processo antes.
-            </p>
-          ) : null}
-        </CardContent>
-      </Card>
+        </DataTableCard>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">

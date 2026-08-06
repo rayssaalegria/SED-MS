@@ -2,15 +2,19 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Plus, Search, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/page-header";
-import { StatusBadge } from "@/components/shared/status-badge";
+import { DataTableCard } from "@/components/shared/data-table-card";
 import { EmptyState } from "@/components/shared/empty-state";
+import {
+  FilterToolbar,
+  ResultCount,
+  SearchField,
+} from "@/components/shared/filter-toolbar";
+import { StatusBadge } from "@/components/shared/status-badge";
 import { DetailSheet } from "@/components/shared/detail-sheet";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -59,20 +63,22 @@ export function ContractsListClient() {
         }
       />
 
-      <Card className="mb-4 border-border/80 shadow-sm">
-        <CardContent className="pt-6">
-          <div className="relative max-w-md">
-            <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-            <Input
-              className="pl-9"
-              placeholder="Buscar por código, nome ou órgão..."
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              aria-label="Buscar contrato"
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <FilterToolbar
+        trailing={
+          <ResultCount
+            filtered={filtered.length}
+            total={contracts.length}
+            label="contrato"
+          />
+        }
+      >
+        <SearchField
+          placeholder="Buscar por código, nome ou órgão..."
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          aria-label="Buscar contrato"
+        />
+      </FilterToolbar>
 
       {filtered.length === 0 ? (
         <EmptyState
@@ -82,76 +88,74 @@ export function ContractsListClient() {
           actionHref="/contratos/novo"
         />
       ) : (
-        <Card className="border-border/80 shadow-sm">
-          <CardContent className="pt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Código</TableHead>
-                  <TableHead>Contrato</TableHead>
-                  <TableHead>Órgão</TableHead>
-                  <TableHead>Ano</TableHead>
-                  <TableHead>Execução</TableHead>
-                  <TableHead>Situação</TableHead>
-                  <TableHead>Vigência</TableHead>
-                  <TableHead className="w-20">Ações</TableHead>
+        <DataTableCard>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Código</TableHead>
+                <TableHead>Contrato</TableHead>
+                <TableHead>Órgão</TableHead>
+                <TableHead>Ano</TableHead>
+                <TableHead>Execução</TableHead>
+                <TableHead>Situação</TableHead>
+                <TableHead>Vigência</TableHead>
+                <TableHead className="w-20">Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((contract) => (
+                <TableRow
+                  key={contract.id}
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => setSelected(contract)}
+                  tabIndex={0}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setSelected(contract);
+                    }
+                  }}
+                  aria-label={`Detalhes do contrato ${contract.code}`}
+                >
+                  <TableCell className="font-medium text-[#7d141d]">
+                    {contract.code}
+                  </TableCell>
+                  <TableCell>{contract.name}</TableCell>
+                  <TableCell>{contract.organizationAcronym}</TableCell>
+                  <TableCell>{contract.year}</TableCell>
+                  <TableCell>{contract.executionPercent}%</TableCell>
+                  <TableCell>
+                    <StatusBadge
+                      label={CONTRACT_STATUS_LABELS[contract.status]}
+                      tone={contractTone(contract.status)}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {formatDate(contract.startDate)} —{" "}
+                    {formatDate(contract.endDate)}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Excluir ${contract.code}`}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        softDeleteContract(contract.id);
+                        toast.success(
+                          "Contrato arquivado (exclusão lógica).",
+                        );
+                      }}
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.map((contract) => (
-                  <TableRow
-                    key={contract.id}
-                    className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => setSelected(contract)}
-                    tabIndex={0}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        setSelected(contract);
-                      }
-                    }}
-                    aria-label={`Detalhes do contrato ${contract.code}`}
-                  >
-                    <TableCell className="font-medium text-[#7d141d]">
-                      {contract.code}
-                    </TableCell>
-                    <TableCell>{contract.name}</TableCell>
-                    <TableCell>{contract.organizationAcronym}</TableCell>
-                    <TableCell>{contract.year}</TableCell>
-                    <TableCell>{contract.executionPercent}%</TableCell>
-                    <TableCell>
-                      <StatusBadge
-                        label={CONTRACT_STATUS_LABELS[contract.status]}
-                        tone={contractTone(contract.status)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {formatDate(contract.startDate)} —{" "}
-                      {formatDate(contract.endDate)}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        aria-label={`Excluir ${contract.code}`}
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          softDeleteContract(contract.id);
-                          toast.success(
-                            "Contrato arquivado (exclusão lógica).",
-                          );
-                        }}
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+              ))}
+            </TableBody>
+          </Table>
+        </DataTableCard>
       )}
 
       <DetailSheet
